@@ -3,6 +3,10 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray, NgForm, NgC
 import { Router } from '@angular/router';
 import { ErrorSummaryService } from '@app/helpers/errorsummary.service';
 import { BrandService } from '@app/services/master/brand/brand.service';
+import {NgbModal, ModalDismissReasons, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import { first } from 'rxjs/operators';
+import {saveAs} from 'file-saver';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-app-audit-consent',
@@ -23,14 +27,15 @@ export class AppAuditConsentComponent implements OnInit {
   brandlist: any = [];
   success: any;
   error: any;
-
+loadingFile:boolean;
   sel_brand_ch: any;
+  modalss:any;
   brand_id: any;
   btnLabel: string = 'Save';
   data: any;
   brlist: any = [];
   rad_label: string;
-  constructor(public router: Router,private fb: FormBuilder, public errorSummary: ErrorSummaryService, public brandService: BrandService) { }
+  constructor(public router: Router,private fb: FormBuilder ,private modalService: NgbModal,public errorSummary: ErrorSummaryService, public brandService: BrandService) { }
 
   ngOnInit() {
 
@@ -54,15 +59,12 @@ export class AppAuditConsentComponent implements OnInit {
 
     this.brandService.getBrandConsentDetails({ app_id: this.app_id, unit_id: this.unit_id }).subscribe(res => {
       if (res.status) {
-        this.data = res.data;
-        for (var i = 0; i < this.data.length; i++) {
-          this.brlist[i] = this.data[i].brand_id;
-        }
+        this.data = res;
+        // for (var i = 0; i < this.data.length; i++) {
+        //   this.brlist[i] = this.data[i].brand_id;
+        // }
 
-        this.auditconsentForm.patchValue({
-          sel_brand_ch: res.sel_brand_ch ? res.sel_brand_ch : "2",
-
-        })
+        this.auditconsentForm.patchValue(res);
 
         this.brand_file = res.brand_file;
 
@@ -101,7 +103,28 @@ export class AppAuditConsentComponent implements OnInit {
     element.target.value = '';
 
   }
+  openmodal(content,arg='') {
+    this.modalss = this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title',centered: true});
+  }
 
+  DownloadFile(val,filename)
+  {
+    this.loadingFile  = true;
+    this.brandService.downloadFile(val)
+     .pipe(first())
+     .subscribe(res => {
+      this.loadingFile = false;
+      this.modalss.close();
+      let fileextension = filename.split('.').pop(); 
+      let contenttype = this.errorSummary.getContentType(filename);
+      saveAs(new Blob([res],{type:contenttype}),filename);
+    },
+    error => {
+      this.error = error;
+      this.loadingFile = false;
+      this.modalss.close();
+    });
+  }
   brandtouched() {
     this.f.brand_id.markAsTouched();
     this.f.sel_brand_ch.markAsTouched();

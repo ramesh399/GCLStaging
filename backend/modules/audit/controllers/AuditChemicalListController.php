@@ -106,25 +106,25 @@ class AuditChemicalListController extends \yii\rest\Controller
 				$data=array();
 				$data['id']=$value->id;
 				$data['audit_id']=$value->audit_id;
-				$data['trade_name']=$value->trade_name;
-				$data['suppier']=$value->suppier;
-				$data['country_id']=$value->country_id;
-				$data['country_id_label']=$value->country->name;
-				$data['utilization']=$value->utilization;
-				$data['proof']=$value->proof;
-				$data['proof_label']=$chemicalmodel->arrProof[$value->proof];
+				// $data['trade_name']=$value->trade_name;
+				// $data['suppier']=$value->suppier;
+				// $data['country_id']=$value->country_id;
+				// $data['country_id_label']=$value->country->name;
+				// $data['utilization']=$value->utilization;
+				// $data['proof']=$value->proof;
+				// $data['proof_label']=$chemicalmodel->arrProof[$value->proof];
 				//$data['type_of_conformity']=$value->type_of_conformity;
-				$data['validity_or_issue_date']=date($date_format,strtotime($value->validity_or_issue_date));
+				// $data['validity_or_issue_date']=date($date_format,strtotime($value->validity_or_issue_date));
 				//$data['msds_issued_date']=date($date_format,strtotime($value->msds_issued_date));
-				$data['msds_available']=$value->msds_available;
-				$data['msds_available_label']=$chemicalmodel->arrMSDSavailable[$value->msds_available];
+				// $data['msds_available']=$value->msds_available;
+				// $data['msds_available_label']=$chemicalmodel->arrMSDSavailable[$value->msds_available];
 				$data['msds_issued_date']=$value->msds_issued_date?date($date_format,strtotime($value->msds_issued_date)):'';
-				$data['conformity_auditor']=$value->conformity_auditor;
-				$data['conformity_auditor_label']=$value->auditorconformity->name;
-				$data['conformity_auditor_label_color']=$chemicalmodel->arrColor[$value->auditorconformity->id];				
+				// $data['conformity_auditor']=$value->conformity_auditor;
+				// $data['conformity_auditor_label']=$value->auditorconformity->name;
+				// $data['conformity_auditor_label_color']=$chemicalmodel->arrColor[$value->auditorconformity->id];				
 				$data['created_at']=date($date_format,$value->created_at);
 				$data['created_by_label']=$value->createdbydata->first_name.' '.$value->createdbydata->last_name;
-				$data['comments']=$value->comments;
+				// $data['comments']=$value->comments;
 				$data['ingredient_name']=$value->ingredient_name?$value->ingredient_name:'';
 				$data['supplier_name']=$value->supplier_name?$value->supplier_name:'';
 				$data['utilization_product']=$value->utilization_product?$value->utilization_product:'';
@@ -143,9 +143,9 @@ class AuditChemicalListController extends \yii\rest\Controller
 				$data['comply_d21']=$value->comply_d21?$value->comply_d21:'';
 				$data['comply_d21_label']=$value->comply_d21?$chemicalmodel->arrProof[$value->comply_d21]:'';
 				$data['comply_d22']=$value->comply_d22?$value->comply_d22:'';
-				$data['comply_d22_label']=$value->comply_d22?$chemicalmodel->arrProof[$value->comply_d22]:'';
+				$data['comply_d22_label']=$value->comply_d22?$chemicalmodel->arrD22list[$value->comply_d22]:'';
 				$data['comply_d23']=$value->comply_d23?$value->comply_d23:'';
-				$data['comply_d23_label']=$value->comply_d23?$chemicalmodel->arrProof[$value->comply_d23]:'';
+				$data['comply_d23_label']=$value->comply_d23?$chemicalmodel->arrD22list[$value->comply_d23]:'';
 				$data['comply_file']=$value->comply_file?$value->comply_file:'';
 
 
@@ -161,10 +161,7 @@ class AuditChemicalListController extends \yii\rest\Controller
 		$data = Yii::$app->request->post();
 		if($data)
 		{
-			if(!Yii::$app->userrole->isOss() && !Yii::$app->userrole->isCustomer() && !Yii::$app->userrole->isAdmin() )
-			{
-				return false;
-			}
+			
 		
 			$column = $data['filetype'];
 			
@@ -302,7 +299,7 @@ class AuditChemicalListController extends \yii\rest\Controller
 	{
 		$modelObj = new AuditReportChemicalList();
 		$conformity = AuditReportChemicalListAuditorConformity::find()->select(['id','name'])->asArray()->all();
-		return ['msdslist'=>$modelObj->arrMSDSavailable,'prooflist'=>$modelObj->arrProof,'conformitylist'=>$conformity];
+		return ['msdslist'=>$modelObj->arrMSDSavailable,'D22list'=>$modelObj->arrD22list,'prooflist'=>$modelObj->arrProof,'conformitylist'=>$conformity];
 	}
 
 

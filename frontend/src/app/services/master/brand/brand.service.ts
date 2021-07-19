@@ -55,4 +55,9 @@ export class BrandService {
   {
     return this.http.post<any>(`${environment.apiUrl}/master/brands/get-consent`,data);
   }
+
+  downloadFile(data){
+    return this.http.post(`${environment.apiUrl}/master/brands/download-file`, data,
+    {responseType:'arraybuffer'});
+  } 
 }

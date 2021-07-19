@@ -124,100 +124,283 @@ class BrandsController extends \yii\rest\Controller
 		
 
 		$resource_access=$userData['resource_access'];
-	    $data =array();
 
-		if($user_type==1 && in_array('brand_management',$rules) && $is_headquarters==1){
-			$brandmod = Brand::find()->where(['user_id'=>$userid])->one();
-			if($brandmod!='' && $brandmod!==null){
-				$appbrandmod = ApplicationBrands::find()->where(['brand_id'=>$brandmod->id])->all();
-				$totalCount = count($appbrandmod);
-	
-				if(count($appbrandmod)>0){
-					foreach($appbrandmod as $appb){
-						$resultArr = array();
-						$resultArr['app_id'] = $appb['app_id'];
-						$resultArr['status'] = $appb['status'];
-						$resultArr['brand_status'] = $application->arrBrandStatus[$appb->status];;
-						$resultArr['comment'] = $appb['comment'];
-						$resultArr['app_approver_brand_id']=$appb['id'];
-	
-						$resultArr['id']= $appb->application->id;
-						$resultArr['code'] =  $appb->application->code;
-						$resultArr['country']= $appb->application->countryname;
-						$resultArr['company_name'] =  $appb->application->companyname;
-						$resultArr['oss_label'] =  $usermodel->ossnumberdetail($appb->application->franchise_id);
-						$resultArr['application_unit_count'] =  count($appb->application->applicationunit);
-						$resultArr['first_name'] =  $appb->application->firstname;
-						$resultArr['audit_type_label'] =  $application->arrAuditType[$appb->application->audit_type];
-						$resultArr['created_at'] =  date($date_format,$appb->application->created_at);
-						$resultArr['status_label_color']=$application->arrBrandColor[$appb->status];
-						$resultArr['brand_name'] = $brandmod->name;
-						$resultArr['brand_id'] = $brandmod->id;
-						$resultArr['brand_group'] = $brandmod->brandgroup->name;
-	
-						$arrAppStd=array();
-						$appStd=$appb->application->applicationstandardview;
-					
-	
-						if(count($appStd)>0)
-						{	
-							foreach($appStd as $app_standard)
-							{
-								$arrAppStd[]=$app_standard->standard->code;
-							}
-						}					
-						$resultArr['application_standard']=implode(', ',$arrAppStd);
-						$data[] = $resultArr;
-					}
-				}
-			}	
-		}elseif($user_type==2){
-			$appbrand = ApplicationBrands::find()->alias('appbr');
-			$appbrand = $appbrand->join('inner join','tbl_application as app','app.id=appbr.app_id');
-			$appbrand = $appbrand->where(['app.customer_id'=>$userid])->all();
+		$appsmodel=new Application();					
+		$model = Application::find()->where('1=1')->alias('t');
+		//$model = $model->join('left join', 'tbl_application_unit as unit','unit.app_id =t.id and unit_type=1');				
+		$responsedata =array('status'=>0,'message'=>"Something went wrong! Please try again later");
+		if($resource_access != 1){
+			if($user_type== Yii::$app->params['user_type']['customer']){
+				//$model = $model->andWhere('t.created_by='.$userid);
+				$model = $model->andWhere('t.customer_id='.$userid);
+			}else if($user_type==1 && in_array('brand_management',$rules) && $is_headquarters==1){
+				$model = $model->join('inner join','tbl_application_brands as appbr','t.id=appbr.app_id');
+				$model = $model->join('inner join','tbl_brands as br','br.id=appbr.brand_id')->andWhere(['br.user_id'=>$userid]);
+			}
 			
-			$totalCount = count($appbrand);
-
-			if(count($appbrand)>0){
-				foreach($appbrand as $apbr){
-					    $resultArr = array();
-					    $resultArr['app_id'] = $apbr['app_id'];
-						$resultArr['status'] = $apbr['status'];
-						$resultArr['brand_status'] = $application->arrBrandStatus[$apbr->status];;
-						$resultArr['comment'] = $apbr['comment'];
-						$resultArr['app_approver_brand_id']=$apbr['id'];
-	
-						$resultArr['id']= $apbr->application->id;
-						$resultArr['code'] =  $apbr->application->code;
-						$resultArr['country']= $appb->application->countryname;
-						$resultArr['company_name'] =  $apbr->application->companyname;
-						$resultArr['oss_label'] =  $usermodel->ossnumberdetail($apbr->application->franchise_id);
-						$resultArr['application_unit_count'] =  count($apbr->application->applicationunit);
-						$resultArr['first_name'] =  $apbr->application->firstname;
-						$resultArr['audit_type_label'] =  $application->arrAuditType[$apbr->application->audit_type];
-						$resultArr['created_at'] =  date($date_format,$apbr->application->created_at);
-						$resultArr['status_label_color']=$application->arrBrandColor[$apbr->status];
-						$resultArr['brand_name'] = $apbr->brands->name;
-						$resultArr['brand_id'] = $apbr->brands->id;
-						$resultArr['brand_group'] = $apbr->brands->brandgroup->name;
-	
-						$arrAppStd=array();
-						$appStd=$apbr->application->applicationstandardview;
-					
-	
-						if(count($appStd)>0)
-						{	
-							foreach($appStd as $app_standard)
-							{
-								$arrAppStd[]=$app_standard->standard->code;
-							}
-						}					
-						$resultArr['application_standard']=implode(', ',$arrAppStd);
-						$data[] = $resultArr;
-				}
+		}
+		
+		if($user_type== Yii::$app->params['user_type']['user'] && $is_headquarters!=1 ){
+			
+			$model = $model->andWhere('t.franchise_id="'.$franchiseid.'"');
+		}		
+		
+		
+		if(isset($post['statusFilter'])  && $post['statusFilter']!='')
+		{
+			if( $post['statusFilter']>='0'){
+				$model = $model->andWhere(['status'=> $post['statusFilter']]);
 			}
 		}
-		return ['applications'=>$data,'total'=>$totalCount];
+		if(isset($post['standardFilter']) && is_array($post['standardFilter']) && count($post['standardFilter'])>0)
+		{
+			$model = $model->join('left join', 'tbl_application_standard as app_standard','app_standard.app_id =t.id ');
+			$model = $model->andWhere(['app_standard.standard_id'=> $post['standardFilter']]);
+			/*sort($post['standardFilter']);
+			$standardFilter = implode(',',$post['standardFilter']);
+			$model = $model->having(['stdgp'=>$standardFilter]);
+			*/
+			//$model->andWhere(['country_id'=> $post['standardFilter']]);
+		}
+		if(isset($post['typeFilter'])  && $post['typeFilter']!='' && count($post['typeFilter'])>0)
+		{
+			$model = $model->andWhere(['t.audit_type'=> $post['typeFilter']]);			
+		}
+		
+		if(isset($post['franchiseFilter'])  && $post['franchiseFilter']!='' && count($post['franchiseFilter'])>0)
+		{
+			$model = $model->andWhere(['t.franchise_id'=> $post['franchiseFilter']]);			
+		}
+		
+		
+		
+		$model = $model->groupBy(['t.id']);
+		
+		$appAddressJoinWithStatus=false;
+		if(is_array($post) && count($post)>0 && isset($post['page']) && isset($post['pageSize']))
+		{		
+            $page = ($post['page'] - 1)*$post['pageSize'];
+			$pageSize = $post['pageSize']; 
+			$statusarray=array_map('strtolower', $appsmodel->arrStatus);
+			
+			if(isset($post['searchTerm']) && $post['searchTerm'] !='')
+			{
+				$searchTerm = $post['searchTerm'];
+				$search_status = array_search(strtolower($searchTerm),$statusarray);
+				if($search_status===false)
+				{
+					$search_status = '';
+				}
+				
+				$appAddressJoinWithStatus=true;
+				$this->appAddressRelation($model);
+				
+				$model = $model->andFilterWhere([
+					'or',
+					['like', 'code', $searchTerm],
+					['like', 'appaddress.company_name', $searchTerm],
+					['like', 'appaddress.first_name', $searchTerm],
+					['like', 'appaddress.last_name', $searchTerm],
+					['like', 'appaddress.telephone', $searchTerm],
+					['like', 'date_format(FROM_UNIXTIME(t.created_at), \'%b %d, %Y\' )', $searchTerm],	
+					['status'=>$search_status]	
+					//['like', 'status', array_search($searchTerm,$statusarray)],										
+				]);			
+			}
+			$totalCount = $model->count();
+			
+			$sortDirection = isset($post['sortDirection']) && $post['sortDirection']=='desc' ?SORT_DESC:SORT_ASC;
+			if(isset($post['sortColumn']) && $post['sortColumn'] !='')
+			{
+				if($post['sortColumn']=='company_name')
+				{
+					if(!$appAddressJoinWithStatus)
+					{
+						$this->appAddressRelation($model);
+					}				
+					$model = $model->orderBy(['appaddress.company_name'=>$sortDirection]);
+				}else{
+					$model = $model->orderBy([$post['sortColumn']=>$sortDirection]);
+				}
+			}
+			else
+			{
+				$model = $model->orderBy(['created_at' => SORT_DESC]);
+			}
+			
+
+
+
+            $model = $model->limit($pageSize)->offset($page);
+		}
+		else
+		{
+			$totalCount = $model->count();
+		}
+		
+		$app_list=array();
+		//$model = $model->asArray()->all();
+		$model = $model->all();		
+		if(count($model)>0)
+		{
+			foreach($model as $application)
+			{
+				$data=array();
+				$data['id']=$application->id;
+				$data['code']=$application->code;
+				$data['company_name']=$application->companyname;
+				$data['address']=$application->address;
+				$data['zipcode']=$application->zipcode;
+				$data['city']=$application->city;
+				$data['title']=$application->title;
+				$data['first_name']=$application->firstname;
+				$data['last_name']=$application->lastname;
+				$data['job_title']=$application->jobtitle;
+				$data['telephone']=$application->telephone;
+				$data['email_address']=$application->emailaddress;
+				//$data['created_at']=date('M d,Y h:i A',$application->created_at);
+				$data['created_at']=date($date_format,$application->created_at);
+				$data['status']=$application->arrStatus[$application->status];
+				$data['overall_status']=$application->overall_status && isset($application->arrOverallStatus[$application->overall_status]) ? $application->arrOverallStatus[$application->overall_status] : '';
+				$data['status_id']=$application->status;
+				$data['status_label_color']=$application->arrStatusColor[$application->status];
+				$data['audit_type']=$application->audit_type;
+				$data['audit_type_label']=$application->arrAuditType[$application->audit_type];
+				$data['application_unit_count']=count($application->applicationunit);
+				$data['process_id']='';
+				$data['parent_app_id']= $application->parent_app_id;
+				if($application->audit_type == 3){
+					$processaddition = ProcessAddition::find()->where(['app_id'=>$application->parent_app_id,'new_app_id'=>$application->id])->one();
+					if($processaddition!==null){
+						$data['addition_id']=$processaddition->id;
+					}
+				}else if($application->audit_type == 4){
+					$addition = StandardAddition::find()->where(['app_id'=>$application->parent_app_id,'new_app_id'=>$application->id])->one();
+					if($addition!==null){
+						$data['addition_id']=$addition->id;
+					}else{
+						$data['addition_id']='';
+					}	
+				}else if($application->audit_type == 5){
+					$addition = UnitAddition::find()->where(['app_id'=>$application->parent_app_id,'new_app_id'=>$application->id])->one();
+					if($addition!==null){
+						$data['addition_id']=$addition->id;
+					}
+				}
+				$arrAppStd=array();
+				
+				$appStd=$application->applicationstandardview;
+				
+				//$appStd = $application->applicationstandard;
+				if(count($appStd)>0)
+				{	
+					foreach($appStd as $app_standard)
+					{
+						$arrAppStd[]=$app_standard->standard->code;
+					}
+				}					
+				$data['application_standard']=implode(', ',$arrAppStd);
+				$data['oss_label'] = $usermodel->ossnumberdetail($application->franchise_id);
+								
+				$app_list[]=$data;
+			}
+		}
+	    // $data =array();
+
+		// if($user_type==1 && in_array('brand_management',$rules) && $is_headquarters==1){
+		// 	$brandmod = Brand::find()->where(['user_id'=>$userid])->one();
+		// 	if($brandmod!='' && $brandmod!==null){
+		// 		$appbrandmod = ApplicationBrands::find()->where(['brand_id'=>$brandmod->id])->all();
+		// 		$totalCount = count($appbrandmod);
+	
+		// 		if(count($appbrandmod)>0){
+		// 			foreach($appbrandmod as $appb){
+		// 				$resultArr = array();
+		// 				$resultArr['app_id'] = $appb['app_id'];
+		// 				$resultArr['status'] = $appb['status'];
+		// 				$resultArr['brand_status'] = $application->arrBrandStatus[$appb->status];;
+		// 				$resultArr['comment'] = $appb['comment'];
+		// 				$resultArr['app_approver_brand_id']=$appb['id'];
+	
+		// 				$resultArr['id']= $appb->application->id;
+		// 				$resultArr['code'] =  $appb->application->code;
+		// 				$resultArr['country']= $appb->application->countryname;
+		// 				$resultArr['company_name'] =  $appb->application->companyname;
+		// 				$resultArr['oss_label'] =  $usermodel->ossnumberdetail($appb->application->franchise_id);
+		// 				$resultArr['application_unit_count'] =  count($appb->application->applicationunit);
+		// 				$resultArr['first_name'] =  $appb->application->firstname;
+		// 				$resultArr['audit_type_label'] =  $application->arrAuditType[$appb->application->audit_type];
+		// 				$resultArr['created_at'] =  date($date_format,$appb->application->created_at);
+		// 				$resultArr['status_label_color']=$application->arrBrandColor[$appb->status];
+		// 				$resultArr['brand_name'] = $brandmod->name;
+		// 				$resultArr['brand_id'] = $brandmod->id;
+		// 				$resultArr['brand_group'] = $brandmod->brandgroup->name;
+	
+		// 				$arrAppStd=array();
+		// 				$appStd=$appb->application->applicationstandardview;
+					
+	
+		// 				if(count($appStd)>0)
+		// 				{	
+		// 					foreach($appStd as $app_standard)
+		// 					{
+		// 						$arrAppStd[]=$app_standard->standard->code;
+		// 					}
+		// 				}					
+		// 				$resultArr['application_standard']=implode(', ',$arrAppStd);
+		// 				$data[] = $resultArr;
+		// 			}
+		// 		}
+		// 	}	
+		// }elseif($user_type==2){
+		// 	$appbrand = ApplicationBrands::find()->alias('appbr');
+		// 	$appbrand = $appbrand->join('inner join','tbl_application as app','app.id=appbr.app_id');
+		// 	$appbrand = $appbrand->where(['app.customer_id'=>$userid])->all();
+			
+		// 	$totalCount = count($appbrand);
+
+		// 	if(count($appbrand)>0){
+		// 		foreach($appbrand as $apbr){
+		// 			    $resultArr = array();
+		// 			    $resultArr['app_id'] = $apbr['app_id'];
+		// 				$resultArr['status'] = $apbr['status'];
+		// 				$resultArr['brand_status'] = $application->arrBrandStatus[$apbr->status];;
+		// 				$resultArr['comment'] = $apbr['comment'];
+		// 				$resultArr['app_approver_brand_id']=$apbr['id'];
+	
+		// 				$resultArr['id']= $apbr->application->id;
+		// 				$resultArr['code'] =  $apbr->application->code;
+		// 				$resultArr['country']= $apbr->application->countryname;
+		// 				$resultArr['company_name'] =  $apbr->application->companyname;
+		// 				$resultArr['oss_label'] =  $usermodel->ossnumberdetail($apbr->application->franchise_id);
+		// 				$resultArr['application_unit_count'] =  count($apbr->application->applicationunit);
+		// 				$resultArr['first_name'] =  $apbr->application->firstname;
+		// 				$resultArr['audit_type_label'] =  $application->arrAuditType[$apbr->application->audit_type];
+		// 				$resultArr['created_at'] =  date($date_format,$apbr->application->created_at);
+		// 				$resultArr['status_label_color']=$application->arrBrandColor[$apbr->status];
+		// 				$resultArr['brand_name'] = $apbr->brands->name;
+		// 				$resultArr['brand_id'] = $apbr->brands->id;
+		// 				$resultArr['brand_group'] = $apbr->brands->brandgroup->name;
+	
+		// 				$arrAppStd=array();
+		// 				$appStd=$apbr->application->applicationstandardview;
+					
+	
+		// 				if(count($appStd)>0)
+		// 				{	
+		// 					foreach($appStd as $app_standard)
+		// 					{
+		// 						$arrAppStd[]=$app_standard->standard->code;
+		// 					}
+		// 				}					
+		// 				$resultArr['application_standard']=implode(', ',$arrAppStd);
+		// 				$data[] = $resultArr;
+		// 		}
+		// 	}
+		// }
+		// return ['applications'=>$data,'total'=>$totalCount];
+
+		return ['applications'=>$app_list,'total'=>$totalCount];
 	}
 	
 	public function actionBrandApprove()
@@ -247,18 +430,30 @@ class BrandsController extends \yii\rest\Controller
 					}
 				}
 				else if($data['actiontype']=='editbrand'){
-					$chappbrmod = ApplicationBrands:: find()->where(['app_id'=>$data['id'],'brand_id'=>$data['chbrand_id']])->one();
-					if($chappbrmod!='' && $chappbrmod!=null){
-						$responsedata = array('status'=>0,'message'=>'Please select different brand!');	
-					}
-					else{
-						$appmodel->brand_id=$data['chbrand_id'];
-						$appmodel->status=3;
-						if($appmodel->validate() && $appmodel->save()){
-							$responsedata= array('status'=>1,'message'=>'Brand has been changed successfully','brand_status'=>$appmodel->status);
+					// $chappbrmod = ApplicationBrands:: find()->where(['app_id'=>$data['id'],'brand_id'=>$data['chbrand_id']])->one();
+					// if($chappbrmod!='' && $chappbrmod!=null){
+					// 	$responsedata = array('status'=>0,'message'=>'Please select different brand!');	
+					// }
+					// else{
+					// 	$appmodel->brand_id=$data['chbrand_id'];
+					// 	$appmodel->status=3;
+					// 	if($appmodel->validate() && $appmodel->save()){
+					// 		$responsedata= array('status'=>1,'message'=>'Brand has been changed successfully','brand_status'=>$appmodel->status);
+					// 	}
+					// }
+
+
+					ApplicationBrands::deleteAll(['app_id'=>$data['id']]);
+					if(is_array($data['brand_ids']) && count($data['brand_ids'])>0){
+						foreach($data['brand_ids'] as $bids){
+							$appbrmod = new ApplicationBrands();
+							$appbrmod->app_id = $data['id'];
+							$appbrmod->brand_id=$bids;
+							$appbrmod->status=1;
+							$appbrmod->save();
 						}
 					}
-					
+					$responsedata= array('status'=>1,'message'=>'Brand has been changed successfully');	
 				}
 			}
 		}

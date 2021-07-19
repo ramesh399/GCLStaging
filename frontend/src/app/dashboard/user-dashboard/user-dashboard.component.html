@@ -1419,21 +1419,21 @@
 					<div class="clearfix"></div>
 				</mat-tab>
 
-				<mat-tab *ngIf="dashboardChartData.brand_waiting_for_approval" label="Brand Waiting for Approval({{dashboardChartData.brand_waiting_for_approval.length}})">
+				<mat-tab *ngIf="dashboardChartData.approved_suppliers" label="Approved Suppliers({{dashboardChartData.approved_suppliers.length}})">
 					<div class="card-box enq-view m-t-20 " >			
 						<table class="table table-bordered col-12" style="font-size:13px;">
 							<tr>
 								<th class="text-center">S.No</th>
 								<th>Company Name </th>
 								
-								<th class="text-center">For Approve</th>
+								<th class="text-center">For View</th>
 							</tr>
 							<tbody>					   						
-								<tr *ngFor="let waiting_for_approval of dashboardChartData.brand_waiting_for_approval; index as i">
+								<tr *ngFor="let approved_suppliers of dashboardChartData.approved_suppliers; index as i">
 									<td width="5%" scope="row" class="center">{{  1+ i }}</td>
-									<td><a [routerLink]="['/brand/view']" [queryParams]="{id:waiting_for_approval.app_id,brand_id:waiting_for_approval.brand_id,brand_approve_id:waiting_for_approval.id}"><span class="dashboard-title">{{ waiting_for_approval.company_name }}</span></a><br><span>{{waiting_for_approval.brand_name}}</span></td>							
+									<td><a [routerLink]="['/brand/view']" [queryParams]="{id:approved_suppliers.app_id,brand_id:approved_suppliers.brand_id,brand_approve_id:approved_suppliers.id}"><span class="dashboard-title">{{ approved_suppliers.company_name }}</span></a><br><span>{{approved_suppliers.brand_name}}</span></td>							
 									
-									<td width="5%" class="text-center"><a [routerLink]="['/brand/view']" [queryParams]="{id:waiting_for_approval.app_id,brand_id:waiting_for_approval.brand_id,brand_approve_id:waiting_for_approval.id}"><i class="fa fa-hand-o-right dashboard-handicon"></i></a></td>						
+									<td width="5%" class="text-center"><a [routerLink]="['/brand/view']" [queryParams]="{id:approved_suppliers.app_id,brand_id:approved_suppliers.brand_id,brand_approve_id:approved_suppliers.id}"><i class="fa fa-hand-o-right dashboard-handicon"></i></a></td>						
 								</tr> 			
 							</tbody>
 						</table>

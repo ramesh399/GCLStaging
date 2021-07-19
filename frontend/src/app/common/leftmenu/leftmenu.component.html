@@ -265,7 +265,7 @@
 				
 				<!--*ngIf="userType==1 || (userType==3 && resource_access== '5') || userType==2"-->
 				<li class="has_sub" >
-					<a href="javascript:void(0);" class="waves-effect waves-primary"><i class="ti-book"></i><span> Information Centre </span> <span class="menu-arrow"></span></a>
+					<a href="javascript:void(0);" *ngIf="userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management'))"class="waves-effect waves-primary"><i class="ti-book"></i><span> Information Centre </span> <span class="menu-arrow"></span></a>
 					<ul class="list-unstyled">
 					    <li *ngIf="checkRole('osp_documents',[1],1)" ><a [routerLink]="['/library/document/list']"><i class="fa fa-circle-o"></i>OSS Documents</a></li>
 						<li *ngIf="leftMenuStatusArr.faq" ><a [routerLink]="['/library/faq/list']"><i class="fa fa-circle-o"></i> FAQ</a></li>	

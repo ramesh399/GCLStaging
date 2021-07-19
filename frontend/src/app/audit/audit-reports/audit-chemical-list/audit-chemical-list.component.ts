@@ -65,6 +65,7 @@ export class AuditChemicalListComponent implements OnInit {
   showgotgrs: boolean=false;
   showgots: boolean=false;
   showgrs: boolean=false;
+  d22list: any;
 
   constructor(private modalService: NgbModal,private activatedRoute:ActivatedRoute, private router: Router,private fb:FormBuilder, public service:AuditChemicalListService, private countryservice: CountryService, public errorSummary: ErrorSummaryService, private authservice:AuthenticationService)
   {
@@ -136,6 +137,7 @@ export class AuditChemicalListComponent implements OnInit {
     this.service.getOptionList().pipe(first())
     .subscribe(res => {    
       this.msdslist  = res.msdslist;
+      this.d22list = res.D22list;
       this.conformitylist  = res.conformitylist;
       this.prooflist  = res.prooflist;
     },
@@ -426,7 +428,7 @@ export class AuditChemicalListComponent implements OnInit {
     //   conformity_auditor:chemicaldata.conformity_auditor,
     //   comments:chemicaldata.comments, 
     // });
-    if (this.standard_ids.length != 0 && (this.standard_ids.includes(1) && this.standard_ids.includes(3))) {
+    
       this.form.patchValue({
         ingredient_name: chemicaldata.ingredient_name,
         product_name: chemicaldata.utilization_product,
@@ -434,7 +436,7 @@ export class AuditChemicalListComponent implements OnInit {
         msds_issued_date:chemicaldata.msds_issued_date? this.errorSummary.editDateFormat(chemicaldata.msds_issued_date):'',
       });
       this.msds_file = chemicaldata.msds_file;
-    }
+    
      if(this.standard_ids.length!=0 && (this.standard_ids.includes(1) )){
       this.form.patchValue({
         version_name: chemicaldata.gots_version,

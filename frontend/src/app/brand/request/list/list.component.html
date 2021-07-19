@@ -70,7 +70,6 @@
 			  <thead>
 			  <tr>
 				<th width="5%" scope="col" class="text-center">S.No</th>
-				<th width="13%" scope="col" sortable="code" (sort)="onSort($event)" class="text-center">App. Number</th>
 				<th scope="col" sortable="company_name" (sort)="onSort($event)" >Company Name</th>	
 				<!-- <th scope="col" class="text-center" *ngIf="userType!=2">OSS</th>				 -->
 				<!-- <th scope="col" class="text-center">No.of Units</th>				 -->
@@ -94,7 +93,6 @@
 			  <tbody>
 			  <tr *ngFor="let application of applications$ | async; let i=index; ">
 				<th scope="row" class="center">{{ i+1+ service.pageNo }}</th>
-				<td class="text-center"><span style="color: #0b77d9;cursor: pointer;"><ngb-highlight [result]="application.code" [term]="service.searchTerm" (click)="open(appdetails,application.id);"></ngb-highlight></span></td>				
 				<td><ngb-highlight [result]="application.company_name"  [term]="service.searchTerm"></ngb-highlight></td>
 				<!-- <td class="text-center" *ngIf="userType!=2">{{application.oss_label}}</td> -->
 				<!-- <td class="text-center"><ngb-highlight [result]="application.application_unit_count"></ngb-highlight></td> -->
@@ -114,7 +112,7 @@
 				<!--<td class="text-center"><ngb-highlight [result]="application.overall_status" [term]="service.searchTerm"></ngb-highlight></td>-->
 				<td class="text-center"><ngb-highlight [result]="application.audit_type_label" [term]="service.searchTerm"></ngb-highlight></td>
 				<td><ngb-highlight [result]="application.created_at" [term]="service.searchTerm"></ngb-highlight></td>
-				<td class="center">
+				<td  class="center">
 				  <a href="javascript:void(0);" [routerLink]="['/brand/view']" [queryParams]="{id:application.id,brand_id:application.brand_id,brand_approve_id:application.app_approver_brand_id}" title="View" alt="View"><i class="fa fa-eye"></i> </a>
 				  <!-- <a href="javascript:void(0);" *ngIf="(application.audit_type=='1' || application.audit_type=='2') && (application.status_id==arrEnumStatus['open'] || application.status_id==arrEnumStatus['pending_with_customer'] || application.status_id==arrEnumStatus['submitted']) && (userType==2 || userType==3 || userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('update_application')) )" [routerLink]="['/brand/edit-request']" [queryParams]="{id:application.id}" title="Edit" alt="Edit" class="pl-2"><i class="fa fa-edit"></i> </a> -->
 				  

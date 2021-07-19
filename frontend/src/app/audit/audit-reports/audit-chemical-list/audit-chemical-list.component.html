@@ -381,7 +381,7 @@
 									<label>Comply to D2.2 <span class="text-danger">*</span></label> <i matTooltip="Applicable only whene D.3 is not applicable (chemicals used in material other than textile, Accessories, Nonwovens, leather, printing if any)" class="fa fa-info-circle text-info ml-1 info-icon-size"  matTooltipClass="tooltip-text-size" aria-tooltip="Applicable only whene D.3 is not applicable (chemicals used in material other than textile, Accessories, Nonwovens, leather, printing if any)"  matTooltipPosition="right"></i> - <a href="https://echa.europa.eu" target="_blank">Refer the Chemicals</a><br>
 									<select formControlName="complytwo" class="form-control select2" [class.is-invalid]="f.complytwo.invalid && f.complytwo.touched">
 										<option value="" >-- Comply to D2.2 --</option>
-										<option *ngFor="let msds of msdslist | keyvalue" value= {{msds.key}}>{{msds.value}}</option>
+										<option *ngFor="let msds of d22list | keyvalue" value= {{msds.key}}>{{msds.value}}</option>
 									</select>
 									<div *ngIf="f.complytwo.errors" class="invalid-feedback">
 										<div *ngIf="f.complytwo.errors.required">Comply to D2.2 is required</div>								
@@ -395,6 +395,8 @@
 										<input type="radio" id="comyes" [checked]="f.comply_ch.value=='1'?true:false" formControlName="comply_ch" value="1" >&nbsp; <label for="comyes">Yes</label>
 										&nbsp;&nbsp;&nbsp;&nbsp;
 										<input type="radio" id="comno" [checked]="f.comply_ch.value=='2'?true:false" formControlName="comply_ch" value="2">&nbsp;<label for="comno"> No</label>
+										&nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="radio" id="comnot" [checked]="f.comply_ch.value=='3'?true:false" formControlName="comply_ch" value="3">&nbsp;<label for="comnot"> Not Applicable</label>
 									</span>
 									<div *ngIf="f.comply_ch.value==''" class="validationerror">
 										{{complythreeError}}							
@@ -578,28 +580,24 @@
 					<th width="20%">Conformity</th>
 					<td width="30%" [style.color]="ChemicalData.conformity_auditor_label_color" ><b>{{ ChemicalData.conformity_auditor_label }}</b></td>
 				</tr> -->
-				<tr *ngIf="showgotgrs">
+				<tr >
 					<th width="20%">Ingredient Name</th>
 					<td width="30%">{{ ChemicalData.ingredient_name }}</td>
 					<th width="20%">Supplier Name</th>
 					<td width="30%">{{ ChemicalData.supplier_name }}</td>
 					
 				</tr>	
-				<tr *ngIf="showgotgrs">
+				<tr >
 					<th width="20%">Utilization on Product</th>
 					<td width="30%">{{ ChemicalData.utilization_product }}</td>
 					<th width="20%">MSDS Date</th>
 					<td width="30%">{{ ChemicalData.msds_issued_date }}</td>
 				</tr>
-				<tr *ngIf="showgotgrs">
+				<tr >
 					<th width="20%">MSDS File</th>
 					<td width="30%"><a href="javascript:void(0);"
 						(click)="downloadFile(ChemicalData.id,'msds_file',ChemicalData.msds_file);openmodal(downloading);">
 						<i class="fa fa-download"></i>&nbsp;{{ ChemicalData.msds_file }}</a></td>
-				</tr>
-				<tr *ngIf="showgotgrs">
-					
-					
 				</tr>
 				<tr *ngIf="showgots">
 					<th width="20%">GOTS Version Number</th>

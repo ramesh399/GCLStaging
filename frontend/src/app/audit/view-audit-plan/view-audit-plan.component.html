@@ -153,7 +153,7 @@
                         
                        
                         
-                            <table class="table-secondary m-b-15" >
+                            <table class="table-secondary m-b-15" *ngIf="userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management'))" >
                                 <tr>
                                     <th width="20%">Unit Date(s)</th>
                                     <td  colspan="3"><div *ngFor="let date of unit.date; let last=last;" class="txt-bg-3d center" style="width:100px;float:left;">{{ date}}</div></td>								
@@ -232,7 +232,7 @@
                                 </tbody>
                             </table>
                             
-                            <table class="table table-bordered col-12" style="font-size:13px;"  *ngIf="userType!=2  && auditPlanData.status >= auditPlanData.arrEnumStatus['approved'] && auditPlanData.status != auditPlanData.arrEnumStatus['rejected']">
+                            <table class="table table-bordered col-12" style="font-size:13px;"  *ngIf="(userType!=2  && auditPlanData.status >= auditPlanData.arrEnumStatus['approved'] && auditPlanData.status != auditPlanData.arrEnumStatus['rejected']) && (userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management')))">
                                 <thead>
                                 <tr>
                                     <th scope="col" class="center" width="6%">S.No</th>
@@ -334,7 +334,7 @@
             </div>
             </div>
 
-            <div style="float:left;width:100%;"  *ngIf="auditPlanData?.inspectionplan && (userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('audit_execution')) || (userType==1 && userdetails.rules.includes('brand_management') && showdetails==true))">
+            <div style="float:left;width:100%;"  *ngIf="auditPlanData?.inspectionplan && (userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management')))">
                 <mat-accordion>
                     <mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = true">
                         <mat-expansion-panel-header>
@@ -467,7 +467,7 @@
             </div>
 
         <!-- <div class="un-lst" *ngIf="auditPlanData?.auditreviews" ><h3>Review Details</h3></div> -->
-        <div style="float:left;width:100%;"  *ngIf="userType!=2 && (userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('audit_execution')) || (userType==1 && userdetails.rules.includes('brand_management') && showdetails==true))">
+        <div style="float:left;width:100%;"  *ngIf="userType!=2 && (userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management')))">
                 <mat-accordion *ngFor="let auditreview of auditPlanData.auditreviews; index as i">
                     <mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = true">
                         <mat-expansion-panel-header>

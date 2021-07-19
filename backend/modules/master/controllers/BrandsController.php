@@ -317,11 +317,11 @@ class BrandsController extends \yii\rest\Controller
 				
 				foreach($audconbrmod as $abc){
 					
-					$resultarr = array();
-					$resultarr['app_id']=$abc['app_id'];
-					$resultarr['unit_id']=$abc['unit_id'];
-					$resultarr['brand_id']=$abc['brand_id'];
-					$brdata[]=$resultarr;
+					// $resultarr = array();
+					// $resultarr['app_id']=$abc['app_id'];
+					// $resultarr['unit_id']=$abc['unit_id'];
+					// $resultarr['brand_id']=$abc['brand_id'];
+					$brdata[]= $abc['brand_id'];
 				}
 			}
 			$bfile='';
@@ -332,7 +332,7 @@ class BrandsController extends \yii\rest\Controller
 				$bfile=$appunitmodel->brand_file;
 				$bconsent=$appunitmodel->is_brand_consent;
 			}
-			return $responsedata = array('status'=>1,'data'=>$brdata,'brand_file'=>$bfile,'sel_brand_ch'=>$bconsent);
+			return $responsedata = array('status'=>1,'brand_id'=>$brdata,'brand_file'=>$bfile,'sel_brand_ch'=>$bconsent);
 		}
 		return $responsedata;
 	}
@@ -369,11 +369,11 @@ class BrandsController extends \yii\rest\Controller
 			if(!empty($maxid)) 
 			{
 				$maxid = $maxid+1;
-				$userregid="GCL-BRN-".$countrycode."-".$maxid;
+				$userregid="GCL-BRN-".$maxid;
 			}
 			else
 			{
-				$userregid="GCL-BRN-".$countrycode."-1";
+				$userregid="GCL-BRN-1";
 			}
 			$model->registration_id=$userregid;
 			
@@ -1107,5 +1107,30 @@ class BrandsController extends \yii\rest\Controller
             return $this->asJson($responsedata);
         }
 	}	
-		
+	public function actionDownloadFile()
+	{
+
+				$filename ='Agreement_Consent_Form_Inditex_Suppliers_(R2).docx';				
+				header('Access-Control-Allow-Origin: *');
+				header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+				header('Access-Control-Max-Age: 1000');
+				header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+				
+				$filepath=Yii::$app->params['user_files'].$filename;
+				if(file_exists($filepath)) 
+				{
+					header('Content-Description: File Transfer');
+					header('Content-Type: application/octet-stream');
+					header('Content-Disposition: attachment; filename="'.basename($filepath).'"');
+					header('Access-Control-Expose-Headers: Content-Length,Content-Disposition,filename,Content-Type;');
+					header('Access-Control-Allow-Headers: Content-Length,Content-Disposition,filename,Content-Type');
+					header('Expires: 0');
+					header('Cache-Control: must-revalidate');
+					header('Pragma: public');
+					header('Content-Length: ' . filesize($filepath));
+					flush(); // Flush system output buffer
+					readfile($filepath);
+				}
+				die;	
+	}
 }

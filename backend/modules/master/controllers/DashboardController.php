@@ -1044,7 +1044,7 @@ class DashboardController extends \yii\rest\Controller
 			$res = $modelUserDashboard->brandWaitingForApproval($franchiseid,$userid);
 			if(count($res)>0){
 				
-				$resultarr['brand_waiting_for_approval']=$res['brand_waiting_for_approval'];
+				$resultarr['approved_suppliers']=$res['approved_suppliers'];
 			}
 		}
 

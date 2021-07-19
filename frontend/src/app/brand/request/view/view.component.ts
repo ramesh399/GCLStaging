@@ -34,6 +34,7 @@ export class ViewComponent implements OnInit {
   btnEnable: boolean;
   brand_id: any;
   app_approver_brand_id: any;
+  brand_ids: any=[];
 
 	
 	constructor(private userservice: UserService,private activatedRoute:ActivatedRoute,public fb:FormBuilder, public  brandservice:BrandService,
@@ -73,7 +74,8 @@ export class ViewComponent implements OnInit {
     this.app_approver_brand_id = this.activatedRoute.snapshot.queryParams.brand_approve_id;
 
     this.brandchangeForm = this.fb.group({
-      sel_brand : ['',[Validators.required]]
+      sel_brand : ['',[Validators.required]],
+      brand_ids: ['',[Validators.required]]
     })
     /*
     this.userservice.getAllUser({type:1}).pipe(first())
@@ -127,7 +129,7 @@ export class ViewComponent implements OnInit {
         let user = this.authservice.getDecodeToken();
         this.userType= user.decodedToken.user_type;
         this.userdetails= user.decodedToken;
-        console.log(this.userdetails);
+        //console.log(this.userdetails);
         
       }else{
         this.userdecoded=null;
@@ -365,9 +367,17 @@ export class ViewComponent implements OnInit {
     });
   }
 
+  getSelectedValue(type,val)
+  {
+    
+    if(type='brand_id'){
+      return this.brandlist.find(x=> x.id==val).brand_name;
+    }
+  }
+
 brandchange(result){
-  
-  this.brandservice.brandapprove(({id:this.id,actiontype:result,chbrand_id:this.brand,brand_id:this.brand_id,app_approver_brand_id:this.app_approver_brand_id}))
+  this.brand_ids = this.brandchangeForm.get('brand_ids').value;
+  this.brandservice.brandapprove(({id:this.id,actiontype:result,chbrand_id:this.brand,brand_id:this.brand_id,app_approver_brand_id:this.app_approver_brand_id,brand_ids:this.brand_ids}))
      .pipe(first())
      .subscribe(res => {
            

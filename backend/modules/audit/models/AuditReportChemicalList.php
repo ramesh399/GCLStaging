@@ -31,6 +31,7 @@ use app\modules\master\models\Country;
 class AuditReportChemicalList extends \yii\db\ActiveRecord
 {
     public $arrMSDSavailable=array('1'=>'Yes','2'=>'No');
+    public $arrD22list=array('1'=>'Yes','2'=>'No','3'=>'Not Applicable');
     public $arrEnumMSDSavailable=array('yes'=>'1','no'=>'2');
     
     public $arrProof=array('1'=>'Yes','2'=>'No');

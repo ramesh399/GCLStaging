@@ -1768,7 +1768,7 @@ class UserDashboard extends Model
 		
 		if($brdmodel!='' && $brdmodel!==null){
 			
-			$appbrandmod = ApplicationBrands::find()->where(['brand_id'=>$brdmodel->id,'status'=>array($application->arrBrandEnumStatus['open'],$application->arrBrandEnumStatus['re_assigned'])])->all();
+			$appbrandmod = ApplicationBrands::find()->where(['brand_id'=>$brdmodel->id,'status'=>array($application->arrBrandEnumStatus['approved'])])->all();
 
 			if(count($appbrandmod)>0){
 				
@@ -1781,7 +1781,7 @@ class UserDashboard extends Model
 					$data['brand_group']=$brdmodel->brandgroup->name;
 					$appmod = Application::find()->where(['id'=>$data['app_id']])->one();
 					$data['company_name']=$appmod->companyname;
-					$resultarr['brand_waiting_for_approval'][]=$data;
+					$resultarr['approved_suppliers'][]=$data;
 				}
 			}
 		}

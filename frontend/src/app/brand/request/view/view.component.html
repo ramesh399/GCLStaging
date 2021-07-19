@@ -341,141 +341,7 @@
 					</mat-accordion>
 				</div>	
 						
-					
-				
-				<div *ngIf="applicationdata?.app_status == arrEnumStatus['osp_reject']" style="margin-top:20px;">
-					<h3>Rejected Details</h3>
-					<table class="table-secondary m-b-15">
-						<tr>
-							<th width="20%">Date</th>
-							<td width="30%">{{ applicationdata.rejected_date }}</td>
-							<th width="20%">Comments</th>
-							<td width="30%">{{ applicationdata.reject_comment }}</td>
-						</tr>
-					</table>				
-				</div>
 
-					
-					
-					
-					<div class="un-lst" *ngIf="applicationdata?.applicationreviews" ><h3>Application Review</h3></div> 
-			 
-					<mat-accordion *ngFor="let applicationreview of applicationdata.applicationreviews; index as i">
-						<mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>
-								  Review {{ i+1 }}
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-							<div class="card-box enq-view">
-							
-								<h3>Reviewer Details</h3>
-
-								<table class="table-secondary m-b-15">
-									<tr>
-										<th width="20%">Reviewer</th>
-										<td width="30%">{{ applicationreview.reviewer }}</td>
-										<th width="20%">Answer</th>
-										<td width="30%">{{ applicationreview.answer_name }}</td>
-									</tr>
-									<tr>
-										<th width="20%">Status</th>
-										<td width="30%">{{ applicationreview.status_name }}</td>
-										<th width="20%">Reviewed Date</th>
-										<td width="30%">{{ applicationreview.updated_at }}</td>
-									</tr>
-									<tr>
-										<th width="20%">Review Risk Assessment Result</th>
-										<td width="30%">{{ applicationreview.review_result_name }}</td>
-										<th width="20%">Comments</th>
-										<td width="30%">{{ applicationreview.status_comments }}</td>
-									</tr>
-								</table>
-								
-								
-								
-		
-								<div  *ngIf="userdetails?.user_type==1 || userdetails?.user_type==3" >
-									<h3 *ngIf="applicationreview?.reviewcomments.length>0">Reviewer Comments</h3>
-									
-									<div class="page-title-box">
-										<div *ngFor="let reviewcomment of applicationreview.reviewcomments; index as i">	
-											<div class="qustion">
-											<h5>{{ 1+i }}. {{ reviewcomment.question }}</h5>
-											{{ reviewcomment.answer }}
-											<p [innerHTML]="reviewcomment.comment"></p>
-											
-											</div>
-										</div>  
-									</div>
-		
-									<h3 *ngIf="applicationreview?.unitreviewcomments.length>0">Facility Review Comments</h3>
-									
-									<div class="page-title-box" *ngFor="let unitreviewcomment of applicationreview.unitreviewcomments; index as i" >
-		
-										<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title>
-													Unit: {{ unitreviewcomment.unit_name }}
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div *ngFor="let unitreviewcomment of unitreviewcomment.reviews; index as j">	
-												<div class="qustion">
-													<h5>{{ 1+j }}. {{ unitreviewcomment.question }}</h5>
-													{{ unitreviewcomment.answer }}
-													<p [innerHTML]="unitreviewcomment.comment"></p>
-												</div>
-											</div>  
-										</mat-expansion-panel>
-		
-									</div>
-								</div>
-								
-								
-								
-								
-								
-							</div>
-						</mat-expansion-panel>                
-					</mat-accordion>
-					
-					
-					
-					<ng-container *ngIf="applicationdata?.applicationapprovals?.length>0">
-						<div class="un-lst" ><h3>Approval Details</h3></div> 
-				
-						<mat-accordion *ngFor="let applicationapproval of applicationdata.applicationapprovals; index as i">
-							<mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = true">
-								<mat-expansion-panel-header>
-									<mat-panel-title>
-									Approval {{ i+1 }}
-									</mat-panel-title>
-								</mat-expansion-panel-header>
-								<div class="card-box enq-view">
-									<table class="table-secondary m-b-15">
-										<tr>
-											<th width="20%">Approver</th>
-											<td width="30%">{{ applicationapproval.approver_name }}</td>
-											<th width="20%">Status</th>
-											<td width="30%">{{ applicationapproval.status_name }}</td>
-										</tr>
-										<tr>
-											<th width="20%">Comments</th>
-											<td width="30%">{{ applicationapproval.comment }}</td>
-											<th width="20%" *ngIf="applicationapproval.status==1">Approved Date</th>
-											<td width="30%" *ngIf="applicationapproval.status==1">{{ applicationapproval.updated_at }}</td>
-											<th width="20%" *ngIf="applicationapproval.status==2">Rejected Date</th>
-											<td width="30%" *ngIf="applicationapproval.status==2">{{ applicationapproval.updated_at }}</td>
-										</tr>
-									</table>
-								</div>
-							</mat-expansion-panel>                
-						</mat-accordion>
-					</ng-container>
-					
-					
-					
-					
 					<div class="text-right m-t-10">
 						<!-- <button type="button"  (click)=
 							 [disabled]="loading"
@@ -505,29 +371,14 @@
 							<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
 							Reject
 						</button>
-						
-						
 
 						<button type="button" *ngIf="(applicationdata?.brand_status=='Open' || applicationdata?.brand_status=='Re Assigned' || btnEnable==true)  && (userdetails.resource_access==1 || userType==3 || (userType==1 && userdetails.rules.includes('brand_management')) )" [disabled]="loading" class="btn but-cust green m-b-5 ml-2" (click)="open(brandConfirmContent,'brandapprove',appform)" >
 								<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
 						Approve</button>
 
-						
-
-							
-
-						
-
-						
-						 
-						
 						<!-- <button type="button" *ngIf="(applicationdata?.app_status!=arrEnumStatus['approved'] && applicationdata?.hasapprover==1 ) && (userdetails.resource_access==1 || ((userType==3 || userType==1) && userdetails.rules.includes('assign_application_approver')) )" [disabled]="loading" class="btn but-cust blue m-b-5 m-r-10" (click)="open(changeapprovercontent)" >
 								<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
 						Change Approver</button> 
-
-						
-
-						
 
 
 						<button type="button" *ngIf="(applicationdata?.app_status==arrEnumStatus['review_completed']) && (userdetails.resource_access==1 || ((userType==3 || userType==1) && userdetails.rules.includes('assign_application_approver')) ) " [disabled]="loading" class="btn but-cust green m-b-5 m-r-5" (click)="open(approvercontent)" >
@@ -590,7 +441,23 @@
 	<div class="modal-body">
 		<form [formGroup]="brandchangeForm">
 			<div class="col-12 pad-left pad-right">
-				<div class="col-6">
+				<div class="col-4">
+					<label>Brands <span class="text-danger">*</span></label>
+					<mat-select placeholder="Brands" formControlName="brand_ids" multiple class="form-control select2" [class.is-invalid]="f.brand_ids.invalid && f.brand_ids.touched">
+						<mat-select-trigger>
+						<span *ngIf="f.brand_ids.value?.length == 1" >{{f.brand_ids.value ? getSelectedValue('brand_id', f.brand_ids.value): ''}}</span>
+						<span *ngIf="f.brand_ids.value?.length > 1" class="example-additional-selection">
+							{{f.brand_ids.value.length}} {{ 'selected' }}
+						</span>
+						</mat-select-trigger>
+						<mat-option *ngFor="let bl of brandlist" [value]="bl.id"  >{{bl.brand_name}}</mat-option>
+					</mat-select>
+					<!-- [disabled]="(standard_addition_id && unitBSectorDisable[unit_autoid] && unitBSectorDisable[unit_autoid].includes(bsector.id) ) ? true:false" -->
+					<div *ngIf="f.brand_ids.errors" class="invalid-feedback">
+						<div *ngIf="f.brand_ids.errors.required" >Brand is required</div>
+					</div>	
+				</div>
+				<!-- <div class="col-6">
 					<label>Brand(s)<span class="text-danger">*</span></label>
 					<select formControlName="sel_brand"  class="form-control select2 m-t-3" [class.is-invalid]="f.sel_brand.invalid &&
 					f.sel_brand.touched">
@@ -602,7 +469,7 @@
 							Brand is required
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 			</form>	
 	</div>

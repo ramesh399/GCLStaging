@@ -60,7 +60,7 @@ export class ListComponent implements OnInit {
         let user = this.authenticationService.getDecodeToken();
         this.userType= user.decodedToken.user_type;
         this.userdetails= user.decodedToken;
-        console.log(user);
+      //  console.log(user);
       }
     });
 	
