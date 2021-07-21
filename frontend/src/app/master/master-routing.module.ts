@@ -186,6 +186,11 @@ import { EditComponent } from '@app/master/brand/request/edit/edit.component';
 import { ListComponent } from '@app/master/brand/request/list/list.component';
 import { ViewComponent } from '@app/master/brand/request/view/view.component';
 
+import { AddBrandGroupComponent } from '@app/master/brand-group/request/add/add-brand-group.component';
+import { EditBrandGroupComponent } from '@app/master/brand-group/request/edit/edit-brand-group.component';
+import { ListBrandGroupComponent } from '@app/master/brand-group/request/list/list-brand-group.component';
+import { ViewBrandGroupComponent } from '@app/master/brand-group/request/view/view-brand-group.component';
+
 const masterRoutes: Routes = [
   
   { path: 'master/audit-interview-sampling-plan/index',  component: AuditInterviewSocialCriteriaComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: {usertype:[1], rules:'audit_interview_sampling_plan_master', roles: [Role.Admin]} },
@@ -240,6 +245,11 @@ const masterRoutes: Routes = [
   { path: 'master/brand/request/edit',  component: EditComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
   { path: 'master/brand/request/list',  component: ListComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
   { path: 'master/brand/request/view',  component: ViewComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
+
+  { path: 'master/brand-group/request/add',  component: AddBrandGroupComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
+  { path: 'master/brand-group/request/edit',  component: EditBrandGroupComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
+  { path: 'master/brand-group/request/list',  component: ListBrandGroupComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
+  { path: 'master/brand-group/request/view',  component: ViewBrandGroupComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: { usertype:[1],rules:'add_franchise',roles: [Role.Admin] } },
   
 
   { path: 'master/audittype/add',  component: AddAudittypeComponent,canLoad: [AuthGuard],canActivate: [AuthGuard],data: {usertype:[1], rules:'add_audit_type', roles: [Role.Admin] } },

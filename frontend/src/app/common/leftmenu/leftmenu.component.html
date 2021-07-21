@@ -21,7 +21,8 @@
 						<!-- <li *ngIf="checkRole('user_master')" ><a [routerLink]="['/master/user/qualification-review']" ><i class="fa fa-circle-o"></i> User Qualification Review</a></li> -->
 
 						<li *ngIf="checkRole('customer_master')" ><a [routerLink]="['/master/customer/list']" ><i class="fa fa-circle-o"></i> Customer</a></li>
-						<li *ngIf="checkRole('customer_master')" ><a [routerLink]="['/master/brand/request/list']" ><i class="fa fa-circle-o"></i> Brand</a></li>
+						<li  ><a [routerLink]="['/master/brand/request/list']" ><i class="fa fa-circle-o"></i> Brand</a></li>
+						<li  ><a [routerLink]="['/master/brand-group/request/list']" ><i class="fa fa-circle-o"></i> Brand Group</a></li>
 						<li *ngIf="checkRole('franchise_master')" ><a [routerLink]="['/master/franchise/list']" ><i class="fa fa-circle-o"></i> OSS</a></li>
 						<li *ngIf="checkRole('user_role_master')" ><a [routerLink]="['/master/userrole/list']" ><i class="fa fa-circle-o"></i> User Role</a></li>
 						<li *ngIf="checkRole('audit_type_master')" ><a [routerLink]="['/master/audittype/list']"><i class="fa fa-circle-o"></i> Audit Type</a></li>

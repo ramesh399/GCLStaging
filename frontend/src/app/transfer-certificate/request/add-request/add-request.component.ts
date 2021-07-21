@@ -111,6 +111,7 @@ export class AddRequestComponent implements OnInit {
   alertWeightErrorMessage:any = '';
   @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
   brandlist: any;
+  loadingFile: boolean;
   constructor(public brandService: BrandService,public service: RawMaterialListService, private modalService: NgbModal,private activatedRoute:ActivatedRoute,private router: Router,private fb:FormBuilder,private buyerservice: BuyerListService,private inspectionservice: InspectionBodyListService,private requestservice: RequestListService,private authservice:AuthenticationService,private countryservice: CountryService,private standardservice: StandardService,public errorSummary: ErrorSummaryService) { }
 
   ngOnInit() {
@@ -318,6 +319,24 @@ export class AddRequestComponent implements OnInit {
     });
   }
     
+  DownloadConsentFile(val,filename)
+  {
+    this.loadingFile  = true;
+    this.brandService.downloadFile(val)
+     .pipe(first())
+     .subscribe(res => {
+      this.loadingFile = false;
+      this.modalss.close();
+      let fileextension = filename.split('.').pop(); 
+      let contenttype = this.errorSummary.getContentType(filename);
+      saveAs(new Blob([res],{type:contenttype}),filename);
+    },
+    error => {
+      this.error = error;
+      this.loadingFile = false;
+      this.modalss.close();
+    });
+  }
 
   setEvidenceFile(){
     if(this.resultdata.requestevidence){

@@ -310,6 +310,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasOne(Brand::className(),['user_id'=>'id']);
     }
 
+    public function getUserbrandgroup()
+    {
+        return $this->hasOne(BrandGroup::className(),['user_id'=>'id']);
+    }
+
 	public function getUsercompanyinfo()
     {
         return $this->hasOne(UserCompanyInfo::className(), ['user_id' => 'id']);

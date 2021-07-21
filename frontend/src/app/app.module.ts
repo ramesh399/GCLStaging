@@ -61,6 +61,7 @@ import { environment } from '../environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ItcenterModule } from './itcenter/itcenter.module';
 
+
 /*
 export function tokenGetter() {
   //console.log(localStorage.getItem("currentUser"));
@@ -91,7 +92,8 @@ export function tokenGetter() {
     ViewProfileComponent,
     LogoutComponent,
     NotificationComponent,
-    FranchiseDashboardComponent
+    FranchiseDashboardComponent,
+    
   ],
   imports: [
     RouterModule,

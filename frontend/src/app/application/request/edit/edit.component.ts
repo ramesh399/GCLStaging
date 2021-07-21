@@ -12,6 +12,7 @@ import { ErrorSummaryService } from '@app/helpers/errorsummary.service';
 import { Country } from '@app/services/country';
 import { State } from '@app/services/state';
 import { Standard } from '@app/services/standard';
+import {saveAs} from 'file-saver';
 
 import { Product } from '@app/models/master/product';
 import { Process } from '@app/models/master/process';
@@ -64,6 +65,7 @@ export class EditComponent implements OnInit {
   @ViewChild('unitProductForm', {static: false}) ngForm: NgForm;
   brandlist: any;
   app_type: any;
+  loadingFile: boolean;
 	
   constructor(public brandService: BrandService,private reductionstandard:ReductionStandardService,private modalService: NgbModal,private router:Router,private BusinessSectorService: BusinessSectorService,private processService:ProcessService,private activatedRoute:ActivatedRoute, 
     private fb:FormBuilder,private productService:ProductService,
@@ -347,11 +349,10 @@ export class EditComponent implements OnInit {
         country_id:res.country_id,
         company_file: res.company_file,
         salutation:res.salutation,
-        brand_id:'',
         title:res.title,
         first_name:res.first_name,
         sel_brand_ch:(res.sel_brand_ch)?res.sel_brand_ch:"2",
-        sel_brand : (res.sel_brand)?res.sel_brand:'',
+        brand_id:(res.sel_brand_ch==2 || res.sel_brand_ch==null)?'':res.brandids,
         last_name:res.last_name,
         job_title:res.job_title,
         company_telephone:res.telephone,
@@ -359,6 +360,8 @@ export class EditComponent implements OnInit {
         preferred_partner_id:res.preferred_partner_id,
         
       });
+
+      this.brand_file=res.brand_file;
 
       this.appdataloading = false;
     },
@@ -2979,6 +2982,28 @@ export class EditComponent implements OnInit {
 
   unitprocessErrors='';
   unitstandardErrors = '';
+  openmodal(content,arg='') {
+    this.modalss = this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title',centered: true});
+  }
+
+  DownloadFile(val,filename)
+  {
+    this.loadingFile  = true;
+    this.brandService.downloadFile(val)
+     .pipe(first())
+     .subscribe(res => {
+      this.loadingFile = false;
+      this.modalss.close();
+      let fileextension = filename.split('.').pop(); 
+      let contenttype = this.errorSummary.getContentType(filename);
+      saveAs(new Blob([res],{type:contenttype}),filename);
+    },
+    error => {
+      this.error = error;
+      this.loadingFile = false;
+      this.modalss.close();
+    });
+  }
 
   onSubmit(actiontype){
     
@@ -2991,6 +3016,7 @@ export class EditComponent implements OnInit {
 	   
      
 	  this.companyFileError ='';
+    this.brandFileError='';
     this.unitListError = '';
     this.appstandardErrors = '';
     this.productstandard_error = '';
@@ -3064,8 +3090,9 @@ export class EditComponent implements OnInit {
     let company_telephone = this.f.company_telephone.value;
     let company_email = this.f.company_email.value;
     let sel_brand_ch = this.f.sel_brand_ch.value;
-    let sel_brand = (this.f.sel_brand_ch.value==1)?this.f.sel_brand.value:'';
+   
 
+   
     let formerrors=false;
     let certbodyformerrors = false;
     certbodyformerrors = this.fnValidateCertificationBody();
@@ -3165,10 +3192,15 @@ export class EditComponent implements OnInit {
         */
     if(company_name =='' || company_address=='' || zipcode=='' || country_id=='' || country_id==null || state_id==null || state_id==''
       || city =='' || salutation=='' || first_name=='' || last_name=='' || job_title=='' || company_telephone==''
-      || company_email=='')
+      || company_email=='' || sel_brand_ch=='')
     {
       formerrors= true;
     }
+    if((this.brand_file =='' || this.brand_file==null) && this.f.sel_brand_ch.value==1 ){
+      this.brandFileError ='Please upload brand file';
+      formerrors=true;
+    }
+   
     /*if(company_name =='' || company_address=='' || zipcode=='' || country_id=='' || state_id==''
       || city =='' || company_file=='' || salutation=='' || first_name=='' || last_name=='' || job_title=='' || company_telephone==''
       || company_email=='')

@@ -83,7 +83,7 @@
 				<th scope="col" sortable="city" (sort)="onSort($event)" >City</th>				
 				<th scope="col">Telephone</th>
 				-->
-				<th scope="col" class="text-center" sortable="status" (sort)="onSort($event)" >Status</th>
+				<th *ngIf="userType!=2"scope="col" class="text-center" sortable="status" (sort)="onSort($event)" >Status</th>
 				<!--<th scope="col" class="text-center" (sort)="onSort($event)" >Overall Status</th>-->
 				<th scope="col" class="text-center">Type</th>
 				<th width="10%" scope="col" >Created Date</th>
@@ -108,12 +108,12 @@
 				<td><ngb-highlight [result]="application.telephone" [term]="service.searchTerm"></ngb-highlight></td>
 				-->
 				
-				<td class="text-center"><b><span [style.color]="application.status_label_color"><ngb-highlight [result]="application.brand_status" [term]="service.searchTerm"></ngb-highlight></span></b></td>
+				<td *ngIf="userType!=2" class="text-center"><b><span [style.color]="application.status_label_color"><ngb-highlight [result]="application.brand_status" [term]="service.searchTerm"></ngb-highlight></span></b></td>
 				<!--<td class="text-center"><ngb-highlight [result]="application.overall_status" [term]="service.searchTerm"></ngb-highlight></td>-->
 				<td class="text-center"><ngb-highlight [result]="application.audit_type_label" [term]="service.searchTerm"></ngb-highlight></td>
 				<td><ngb-highlight [result]="application.created_at" [term]="service.searchTerm"></ngb-highlight></td>
 				<td  class="center">
-				  <a href="javascript:void(0);" [routerLink]="['/brand/view']" [queryParams]="{id:application.id,brand_id:application.brand_id,brand_approve_id:application.app_approver_brand_id}" title="View" alt="View"><i class="fa fa-eye"></i> </a>
+				  <a href="javascript:void(0);" [routerLink]="['/brand/view']" [queryParams]="{id:application.app_id,brand_id:application.brand_id,brand_approve_id:application.app_approver_brand_id}" title="View" alt="View"><i class="fa fa-eye"></i> </a>
 				  <!-- <a href="javascript:void(0);" *ngIf="(application.audit_type=='1' || application.audit_type=='2') && (application.status_id==arrEnumStatus['open'] || application.status_id==arrEnumStatus['pending_with_customer'] || application.status_id==arrEnumStatus['submitted']) && (userType==2 || userType==3 || userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('update_application')) )" [routerLink]="['/brand/edit-request']" [queryParams]="{id:application.id}" title="Edit" alt="Edit" class="pl-2"><i class="fa fa-edit"></i> </a> -->
 				  
 				  <!--<a href="javascript:void(0);" *ngIf="application.audit_type=='3' && (application.status_id==arrEnumStatus['open'] || application.status_id==arrEnumStatus['pending_with_customer']) && (userType==2 || userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('update_application')) )" [routerLink]="['/change-scope/process-addition/add']" [queryParams]="{id:application.addition_id,app:application.parent_app_id,new_app_id:application.id}" title="Edit" alt="Edit" class="pl-2"><i class="fa fa-edit"></i> </a>-->

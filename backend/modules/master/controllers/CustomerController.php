@@ -191,7 +191,7 @@ class CustomerController extends \yii\rest\Controller
 			$model->user_type=2;
 			
 			$maxid = User::find()->where(['user_type'=>2])->max('id');
-			$countrymodel=Country::find()->where(['id'=>$dbdata['company_country_id']])->one();
+			$countrymodel=Country::find()->where(['id'=>$data['company_country_id']])->one();
 			$countrycode=$countrymodel['code'];
 			if(!empty($maxid)) 
 			{

@@ -25,6 +25,11 @@ export class BrandService {
   {
     return this.http.post<any>(`${environment.apiUrl}/master/brands/create`,data);
   }
+  
+  addBrandGroup(data)
+  {
+    return this.http.post<any>(`${environment.apiUrl}/master/brand-group/create`,data);
+  }
 
   getBrandGroup(): Observable<any>
    {

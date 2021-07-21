@@ -8,6 +8,7 @@ import { ProductService } from '@app/services/master/product/product.service'
 import { ProcessService } from '@app/services/master/process/process.service';
 import { ErrorSummaryService } from '@app/helpers/errorsummary.service';
 import { BusinessSectorService } from '@app/services/master/business-sector/business-sector.service';
+import {saveAs} from 'file-saver';
 
 import { Country } from '@app/services/country';
 import { State } from '@app/services/state';
@@ -66,6 +67,7 @@ export class AddComponent implements OnInit {
   @ViewChild('unitProductForm', {static: false}) ngForm: NgForm;
   brandlist: any;
   app_type: any;
+  loadingFile: boolean;
   
   constructor(public brandService: BrandService,private reductionstandard:ReductionStandardService,private modalService: NgbModal,private BusinessSectorService: BusinessSectorService, private router:Router,private processService:ProcessService, private fb:FormBuilder,
     private productService:ProductService,private countryservice: CountryService,
@@ -313,7 +315,28 @@ export class AddComponent implements OnInit {
     }
   }
  
- 
+  openmodal(content,arg='') {
+    this.modalss = this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title',centered: true});
+  }
+
+  DownloadFile(val,filename)
+  {
+    this.loadingFile  = true;
+    this.brandService.downloadFile(val)
+     .pipe(first())
+     .subscribe(res => {
+      this.loadingFile = false;
+      this.modalss.close();
+      let fileextension = filename.split('.').pop(); 
+      let contenttype = this.errorSummary.getContentType(filename);
+      saveAs(new Blob([res],{type:contenttype}),filename);
+    },
+    error => {
+      this.error = error;
+      this.loadingFile = false;
+      this.modalss.close();
+    });
+  }
 
   unitStandardsDisable:any={};
   unitBSectorDisable:any={};
@@ -3115,9 +3138,7 @@ export class AddComponent implements OnInit {
       //this.companyFileError ='Please upload company certification file';
     }
 
-    if(this.brand_file ='' && this.f.sel_brand_ch.value==1 ){
-      this.brandFileError =='Please upload brand file';
-    }
+    
 
     //this.standardsLength = this.enquiryForm.get('standardsChk').value.length;
     this.standardsLength = this.selStandardIds.length;//this.standardsChkDb.concat(this.enquiryForm.get('standardsChk').value).length;
@@ -3213,7 +3234,10 @@ export class AddComponent implements OnInit {
       formerrors= true;
     }
     
-	 
+    if((this.brand_file =='' || this.brand_file==null) && this.f.sel_brand_ch.value==1 ){
+      this.brandFileError ='Please upload brand file';
+      formerrors= true;
+    }
 	// --------  Standard Addition Code Start Here ---------	
 	if(this.standardsLength>0)
 	{

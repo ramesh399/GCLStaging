@@ -1631,11 +1631,10 @@ class AppsController extends \yii\rest\Controller
 				}
 			}
 			
-
-
+			$target_dir_company = Yii::$app->params['company_files'];
 			if(isset($_FILES['company_file']['name']))
 			{
-				$target_dir_company = Yii::$app->params['company_files'];
+				
 				$tmp_name = $_FILES["company_file"]["tmp_name"];
 	   			$name = $_FILES["company_file"]["name"];
 				
@@ -1663,6 +1662,17 @@ class AppsController extends \yii\rest\Controller
 				*/
 			}else{
 				$model->company_file= isset($data['company_file'])?$data['company_file']:"";
+			}
+ 
+			if(isset($_FILES['brand_file']['name']) && $data['sel_brand_ch']==1)
+			{
+				
+				$tmp_name = $_FILES["brand_file"]["tmp_name"];
+	   			$name = $_FILES["brand_file"]["name"];
+				$model->brand_file=Yii::$app->globalfuns->postFiles($name,$tmp_name,$target_dir_company);	
+			}
+			if($data['sel_brand_ch']==2){
+				$model->brand_file='';
 			}
 
 			if($data['actiontype']=='draft'){
@@ -1755,6 +1765,7 @@ class AppsController extends \yii\rest\Controller
 
 			$model->tax_no=$data['tax_no'];
 			$model->updated_by=$userData['userid'];
+			$model->is_brand = $data['sel_brand_ch'];
 
 			if($model->validate() && $model->save())
 			{
@@ -1779,7 +1790,21 @@ class AppsController extends \yii\rest\Controller
 					$ApplicationChangeAddress->save();
 				//}
 				
-				
+				$brandId = [];
+				if(is_array($data['brand_id']) && $data['sel_brand_ch']==1 ){
+					ApplicationBrands::deleteAll(['app_id'=>$data['id']]);
+					$brandId = $data['brand_id'];
+					foreach($brandId as $brid){
+						$brandmode = new ApplicationBrands();
+						$brandmode->app_id = $model->id;
+						$brandmode->brand_id = $brid;
+						$brandmode->status=1;
+						$brandmode->save();
+					}
+				}
+				if($data['sel_brand_ch']==2){
+					ApplicationBrands::deleteAll(['app_id'=>$data['id']]);
+				}
 
 				$apptype_standardaddition = 0;
 				if($model->audit_type==$model->arrEnumAuditType['standard_addition']){
@@ -2592,8 +2617,18 @@ class AppsController extends \yii\rest\Controller
 				$resultarr["code"]=$model->code;
 				
 				$resultarr['sel_brand_ch']= $model->is_brand;
-				
+				$resultarr['brand_file']=$model->brand_file;
+					
+			    $brandids=array();
 
+				$appbrandmodel = $model->applicationbrands;
+				if(count($appbrandmodel)>0){
+					foreach($appbrandmodel as $brmod){
+						$brandids[]=$brmod->brands->id;
+					}
+				}
+				$resultarr['brandids']=$brandids;
+				
 				
 
 				$resultarr["company_file"]=$model->company_file;

@@ -74,7 +74,7 @@
     brand_version?:any;
     brand_status?:any;
     brand_group?:any;
-    
+    brandids?:any;
     created_by?:any;
     audit_type_label?:any;
 

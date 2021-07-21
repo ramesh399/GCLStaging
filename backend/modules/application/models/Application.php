@@ -162,7 +162,7 @@ class Application extends \yii\db\ActiveRecord
 
 	public function getApplicationbrands()
 	{
-		return $this->hasOne(ApplicationBrands::className(),['app_id'=>'id']);
+		return $this->hasMany(ApplicationBrands::className(),['app_id'=>'id']);
 	}
 
 	public function getUnannoucedaudit()

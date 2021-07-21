@@ -166,7 +166,9 @@ export class ViewComponent implements OnInit {
         this.panelOpenState = true;
       }
        this.panelOpenState = true; */
-       this.brandchangeForm.patchValue({sel_brand:res.brandId});
+       this.brandchangeForm.patchValue({
+        brand_ids:this.applicationdata.brandids,
+     })
       if(this.applicationdata.app_status==this.arrEnumStatus['submitted']){
         this.applicationdata.units.forEach((val)=>{
           let bsectorsselgroup = val['bsectorsselgroup'];
@@ -191,7 +193,9 @@ export class ViewComponent implements OnInit {
     error => {
         this.error = {summary:error};
         this.loading = false;
-    });  
+    });
+
+   
   } 
 
   get f() { return this.brandchangeForm.controls;} 

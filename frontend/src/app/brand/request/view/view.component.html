@@ -77,8 +77,8 @@
 							<th width="20%">Brand Group</th>
 							<td width="30%">{{ applicationdata.brand_group }}</td>
 						</tr>
-						<tr>
-							<th width="20%">Brand Version</th>
+						<tr *ngIf="userType!=2">
+							<th  width="20%">Brand Version</th>
 							<td width="30%">{{ applicationdata.brand_version }}</td>
 							<th width="20%">Brand Status</th>
 							<td width="30%">{{ applicationdata.brand_status }}</td>

@@ -222,16 +222,19 @@
                                         </div>                                
                                     </div>
 								</div>    
-								<div *ngIf="app_type!='edit'">
+								<div >
 								<span class="label-pad"  style="width:330px;"><label>Are you related to brand?</label></span> -  <span class="name-pad">
 									<input type="radio" id="bryes" [checked]="f.sel_brand_ch.value=='1'?true:false" formControlName="sel_brand_ch" value="1" >&nbsp; <label for="yes1">Yes</label>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" id="brno" [checked]="f.sel_brand_ch.value=='2'?true:false" formControlName="sel_brand_ch" value="2">&nbsp;<label for="no2"> No</label>
 								</span>
 							</div>
-								<div class="cs-pgm-blue top" *ngIf="f.sel_brand_ch.value==1 && app_type!='edit'">
+								<div class="cs-pgm-blue top" *ngIf="f.sel_brand_ch.value==1 ">
 									<div class="col-12 pad-left pad-right">
-										
+										<div class="form-group row">
+											<label>Click here to Download the Consent Form. </label>
+											<a style="font-size: 20px;" href="javascript:void(0);"  (click)="openmodal(downloading);DownloadFile('consent','Agreement_Consent_Form_Inditex_Suppliers_(R2).docx')" class="pl-2" title="Download" alt="Download"><i class="fa fa-file-pdf-o text-danger"></i></a>
+										</div>	
 										<div class="form-group row">
 										<div class="col-4">
 											<label>Brands <span class="text-danger">*</span></label>
@@ -1337,3 +1340,11 @@
 		</div>
 	</form>
 </ng-template>
+<ng-template #downloading let-modal>
+    <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">File Downloading</h4>
+    </div>
+    <div class="modal-body" style="font-size:16px;">
+            Please wait, your file is downloading ...
+    </div>
+  </ng-template>
