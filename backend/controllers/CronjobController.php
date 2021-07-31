@@ -321,8 +321,9 @@ class CronjobController extends \yii\rest\Controller
 		$model = UserDeclaration::find()->all();
 		if(count($model)>0){
 			foreach($model as $mod){
-				if($mod->id<98){
+				if($mod->id<183){
 					$mod->relation_declaration_consent=3;
+					$mod->relation_name='Self';
 					$mod->relation_type='NA';
 					$mod->save();
 				}

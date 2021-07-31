@@ -41,6 +41,8 @@ loadingFile:boolean;
 
     if(this.tc_request_id){
       this.rad_label = 'Do you want to share TC detail to brand?';
+    }else if(this.unit_type==3){
+      this.rad_label = 'Do you want to share Unit/SubContractor detail to brand?';
     }
     else{
       this.rad_label ="Do you want to share Audit details to brand?"

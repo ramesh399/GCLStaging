@@ -188,11 +188,17 @@ class RequestController extends \yii\rest\Controller
 					}
 					$model = $model->andWhere('t.status>1 and app.franchise_id="'.$userid.'"');
 				}
-				 if($user_type==1 && in_array('brand_management',$rules) && $is_headquarters==1){
+				 if($user_type==1 && in_array('view_brand',$rules) && $is_headquarters==1){
 					$model = $model->join('inner join','tbl_application as app','app.id=t.app_id');
 					$model = $model->join('inner join','tbl_application_brands as appbrand','app.id=appbrand.app_id');
 					$model = $model->join('inner join','tbl_brands as bran','bran.id=appbrand.brand_id');
 					$model = $model->andWhere(['bran.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved']]);
+				}else if($user_type==1 && in_array('brand_report',$rules) && $is_headquarters==1){
+					$model = $model->join('inner join','tbl_application as app','app.id=t.app_id');
+					$model = $model->join('inner join','tbl_application_brands as appbrand','app.id=appbrand.app_id');
+					$model = $model->join('inner join','tbl_brands as bran','bran.id=appbrand.brand_id');
+					$model = $model->join('inner join','tbl_brand_group as bg','bran.brand_group_id=bg.id');
+					$model = $model->andWhere(['bg.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved']]);
 				}
 					
 			}
@@ -205,6 +211,10 @@ class RequestController extends \yii\rest\Controller
 					$this->appRelation($model);
 				}
 				$model = $model->andWhere(['app.franchise_id'=> $post['franchiseFilter']]);	
+			}
+			if(isset($post['brandFilter']) && is_array($post['brandFilter']) && count($post['brandFilter'])>0)
+			{
+				$model = $model->andWhere(['bran.id'=> $post['brandFilter']]);	
 			}		
 
 			if(is_array($post) && count($post)>0 && isset($post['page']) && isset($post['pageSize']))
@@ -370,6 +380,30 @@ class RequestController extends \yii\rest\Controller
 						$data['approved_date']=date($date_format,$modelData->currentreviewercmt->created_at);	
 					}
 					
+					$brandname=array();
+				    $brandgroup=array();
+
+						$appbrandmodel = $modelData->application->applicationbrands;
+						if(count($appbrandmodel)>0){
+							foreach($appbrandmodel as $brmod){
+								if($user_type==2){
+									$brandname[]=$brmod->brands->name;
+									$brandgroup[]=$brmod->brands->brandgroup->name;
+								}else if(in_array('brand_report',$rules)){
+									if($brmod->brands->brandgroup->user_id==$userid){
+										$brandname[]=$brmod->brands->name;
+										$brandgroup[]=$brmod->brands->brandgroup->name;
+									}
+								}else if(in_array('view_brand',$rules)){
+									if($brmod->brands->user_id==$userid){
+										$brandname[]=$brmod->brands->name;
+										$brandgroup[]=$brmod->brands->brandgroup->name;
+									}
+								}	
+							}
+						}
+						$data['brand_name']=implode(', ',$brandname);
+						$data['brand_group']=implode(', ',array_unique($brandgroup));
 
 					$list[]=$data;
 				}

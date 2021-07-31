@@ -354,7 +354,11 @@
 										<a href="javascript:void(0);" (click)="viewProduct(productDetails,product)" title="View Product" alt="View Product"> <i class="fa fa-eye"></i> </a>&nbsp;
 										<a href="javascript:void(0);" (click)="editProduct(productEntryDetails,i,product)" title="Edit Product" alt="Edit Product" > <i class="fa fa-edit"></i> </a>&nbsp;
 										<a href="javascript:void(0);" (click)="removeProductData(confirmcontent,product)" title="Delete Product" alt="Delete Product"  > <i class="fa fa-trash text-danger"></i> </a>
+										<a href="javascript:void(0);" (click)="cloneProductData(product)" title="Clone Product" alt="Clone Product"  > <i class="fa fa-clone"></i> </a>
 									</td>
+									
+																			
+
 								</tr> 								
 							</ng-container>               
 							<tr  *ngIf="resultdata?.requestproduct?.length==0" >

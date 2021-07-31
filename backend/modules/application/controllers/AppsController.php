@@ -199,6 +199,13 @@ class AppsController extends \yii\rest\Controller
 			*/
 			//$model->andWhere(['country_id'=> $post['standardFilter']]);
 		}
+		if(isset($post['brandFilter']) && is_array($post['brandFilter']) && count($post['brandFilter'])>0)
+		{
+			$model = $model->join('left join','tbl_application_brands as appbrand','t.id=appbrand.app_id');
+			$model = $model->join('left join','tbl_brands as bran','bran.id=appbrand.brand_id');
+			$model = $model->andWhere(['bran.id'=> $post['brandFilter']]);
+			
+		}
 		if(isset($post['typeFilter'])  && $post['typeFilter']!='' && count($post['typeFilter'])>0)
 		{
 			$model = $model->andWhere(['t.audit_type'=> $post['typeFilter']]);			
@@ -338,6 +345,32 @@ class AppsController extends \yii\rest\Controller
 				}					
 				$data['application_standard']=implode(', ',$arrAppStd);
 				$data['oss_label'] = $usermodel->ossnumberdetail($application->franchise_id);
+
+				$brandname=array();
+				$brandgroup=array();
+
+				$appbrandmodel = $application->applicationbrands;
+				if(count($appbrandmodel)>0){
+					foreach($appbrandmodel as $brmod){
+						if($user_type==2){
+							$brandname[]=$brmod->brands->name;
+							$brandgroup[]=$brmod->brands->brandgroup->name;
+						}else if(in_array('brand_report',$rules)){
+							if($brmod->brands->brandgroup->user_id==$userid){
+								$brandname[]=$brmod->brands->name;
+								$brandgroup[]=$brmod->brands->brandgroup->name;
+							}
+						}else if(in_array('view_brand',$rules)){
+							if($brmod->brands->user_id==$userid){
+								$brandname[]=$brmod->brands->name;
+								$brandgroup[]=$brmod->brands->brandgroup->name;
+							}
+						}	
+					}
+				}
+				$data['brand_name']=implode(', ',$brandname);
+				$data['brand_group']=implode(', ',array_unique($brandgroup));
+
 								
 				$app_list[]=$data;
 			}

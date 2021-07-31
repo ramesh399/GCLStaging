@@ -307,7 +307,7 @@ class BrandsController extends \yii\rest\Controller
 		// }
 	    $data =array();
 
-		if($user_type==1 && in_array('brand_management',$rules) && $is_headquarters==1){
+		if($user_type==1 && in_array('view_brand',$rules) && $is_headquarters==1){
 			$brandmod = Brand::find()->where(['user_id'=>$userid])->one();
 			if($brandmod!='' && $brandmod!==null){
 				$appbrandmod = ApplicationBrands::find()->where(['brand_id'=>$brandmod->id])->all();
@@ -352,9 +352,18 @@ class BrandsController extends \yii\rest\Controller
 					}
 				}
 			}	
-		}elseif($user_type==2){
+		}else{
 			$appbrand = Application::find()->alias('app');
-			$appbrand = $appbrand->where(['app.customer_id'=>$userid])->all();
+
+			if($user_type==2){
+				$appbrand = $appbrand->where(['app.customer_id'=>$userid])->all();
+			}else if($user_type==1 && in_array('brand_report',$rules)){
+				$appbrand = $appbrand->join('inner join','tbl_application_brands as appbrands','app.id=appbrands.app_id');
+				$appbrand = $appbrand->join('inner join','tbl_brands as br','br.id=appbrands.brand_id');
+				$appbrand = $appbrand->join('inner join','tbl_brand_group as brg','brg.id=br.brand_group_id');
+				$appbrand = $appbrand->andWhere(['brg.user_id'=>$userid])->all();
+			}
+			
 			
 			$totalCount = count($appbrand);
 
@@ -394,8 +403,16 @@ class BrandsController extends \yii\rest\Controller
 						$appbrandmodel = $apbr->applicationbrands;
 						if(count($appbrandmodel)>0){
 							foreach($appbrandmodel as $brmod){
-								$brandname[]=$brmod->brands->name;
-								$brandgroup[]=$brmod->brands->brandgroup->name;
+								if($user_type==2){
+									$brandname[]=$brmod->brands->name;
+									$brandgroup[]=$brmod->brands->brandgroup->name;
+								}else if(in_array('brand_report',$rules)){
+									if($brmod->brands->brandgroup->user_id==$userid){
+										$brandname[]=$brmod->brands->name;
+										$brandgroup[]=$brmod->brands->brandgroup->name;
+									}
+								}
+								
 							}
 						}
 						$resultArr['brand_name']=implode(', ',$brandname);
@@ -419,25 +436,25 @@ class BrandsController extends \yii\rest\Controller
 		if ($data) 
 		{	
 
-			$appmodel = ApplicationBrands::find()->where(['app_id'=>$data['id'],'brand_id'=>$data['brand_id'],'id'=>$data['app_approver_brand_id']])->one();
+			// $appmodel = ApplicationBrands::find()->where(['app_id'=>$data['id'],'brand_id'=>$data['brand_id'],'id'=>$data['app_approver_brand_id']])->one();
 
-			if($appmodel!='' && $appmodel!==null){
-				if($data['actiontype']=='brandreject'){
-					$appmodel->status=2;
-					$appmodel->comment=$data['reject_comment'];
+			// if($appmodel!='' && $appmodel!==null){
+			// 	if($data['actiontype']=='brandreject'){
+			// 		$appmodel->status=2;
+			// 		$appmodel->comment=$data['reject_comment'];
 
-					if($appmodel->validate() && $appmodel->save()){
-						$responsedata = array('status'=>1,'message'=>'Brand has been rejected successfully','brand_status'=>$appmodel->status);
-					}
-				}
-				else if($data['actiontype']=='brandapprove'){
-					$appmodel->status=1;
-					$appmodel->comment=$data['reject_comment'];
-					if($appmodel->validate() && $appmodel->save()){
-						$responsedata = array('status'=>1,'message'=>'Brand has been approved successfully','brand_status'=>$appmodel->status);
-					}
-				}
-			}
+			// 		if($appmodel->validate() && $appmodel->save()){
+			// 			$responsedata = array('status'=>1,'message'=>'Brand has been rejected successfully','brand_status'=>$appmodel->status);
+			// 		}
+			// 	}
+			// 	else if($data['actiontype']=='brandapprove'){
+			// 		$appmodel->status=1;
+			// 		$appmodel->comment=$data['reject_comment'];
+			// 		if($appmodel->validate() && $appmodel->save()){
+			// 			$responsedata = array('status'=>1,'message'=>'Brand has been approved successfully','brand_status'=>$appmodel->status);
+			// 		}
+			// 	}
+			// }
 			if($data['actiontype']=='editbrand'){
 				// $chappbrmod = ApplicationBrands:: find()->where(['app_id'=>$data['id'],'brand_id'=>$data['chbrand_id']])->one();
 				// if($chappbrmod!='' && $chappbrmod!=null){
@@ -2678,25 +2695,31 @@ class BrandsController extends \yii\rest\Controller
 				
 				$resultarr['sel_brand_ch']= $model->is_brand;
 				
-				if($user_type==2){
-					$brandname=array();
-					$brandgroup=array();
-					$brandids=array();
+				
+				$brandname=array();
+				$brandgroup=array();
+				$brandids=array();
 
-						$appbrandmodel = $model->applicationbrands;
-						if(count($appbrandmodel)>0){
-							foreach($appbrandmodel as $brmod){
+					$appbrandmodel = $model->applicationbrands;
+					if(count($appbrandmodel)>0){
+						foreach($appbrandmodel as $brmod){
+							if(in_array('brand_report',$rules) && $brmod->brands->brandgroup->user_id==$userid){
+								$brandids[]=$brmod->brands->id;
+								$brandname[]=$brmod->brands->name;
+								$brandgroup[]=$brmod->brands->brandgroup->name;
+							}else if($user_type==2){
 								$brandids[]=$brmod->brands->id;
 								$brandname[]=$brmod->brands->name;
 								$brandgroup[]=$brmod->brands->brandgroup->name;
 							}
 						}
-						$resultarr['brandids']=$brandids;
-						$resultarr['brand_name']=implode(', ',$brandname);
-						$resultarr['brand_group']=implode(', ',array_unique($brandgroup));
+					}
+					$resultarr['brandids']=$brandids;
+					$resultarr['brand_name']=implode(', ',$brandname);
+					$resultarr['brand_group']=implode(', ',array_unique($brandgroup));
 
-				}
-				 if($model->is_brand==1 && $model->is_brand!==null && ($user_type==1 && in_array('brand_management',$rules))){
+				
+				 if($model->is_brand==1 && $model->is_brand!==null && ($user_type==1 && in_array('view_brand',$rules))){
 					
 					$brnmod = ApplicationBrands::find()->where(['app_id'=>$model->id,'brand_id'=>$data['brand_id'],'id'=>$data['app_approver_brand_id']])->one();
 	

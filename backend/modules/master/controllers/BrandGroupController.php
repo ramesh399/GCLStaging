@@ -296,4 +296,141 @@ class BrandGroupController extends \yii\rest\Controller
 		return $this->asJson($responsedata);
 	}
 
+    public function actionFetchUser()
+	{
+		$userData = Yii::$app->userdata->getData();
+		$is_headquarters =$userData['is_headquarters'];
+		$result=array();
+		$responsedata=array('status'=>0,'message'=>'Something went wrong! Please try again');
+		$data = Yii::$app->request->post();
+		if ($data) 
+		{		
+			$date_format = Yii::$app->globalfuns->getSettings('date_format');
+			$Usermodel = User::find()->where(['id' => $data['id']])->one();
+			
+			if ($Usermodel !== null)
+			{
+				/*
+				if($Usermodel->user_type!='2')
+				{
+					$Usermodel->country_id=$Usermodel->country->name;
+					$Usermodel->state_id=$Usermodel->state->name;
+				}
+				*/
+				
+				$resultarr=array();
+				//if(count($Usermodel)>0)
+				//{
+				foreach($Usermodel as $key => $value)
+				{
+					$resultarr[$key]=$value;
+				}
+				//}
+				
+				$resultarr['country_name']=$Usermodel->country ? $Usermodel->country->name : '';
+				$resultarr['state_name']=$Usermodel->state ? $Usermodel->state->name : '';
+				
+				$HQLabel='No';
+				if($is_headquarters==1)
+				{
+					$HQLabel='Yes';
+				}
+				$resultarr['headquarters']=$HQLabel;
+				
+				$resultarr['created_at']=date($date_format,$Usermodel->created_at);
+				$resultarr['created_by']=$Usermodel->username->first_name.' '.$Usermodel->username->last_name;				
+
+				$UserCompanyInfo = UserCompanyInfo::find()->where(['user_id' => $data['id']])->one();
+				$resultarr["company_name"]=$UserCompanyInfo->company_name;
+				$resultarr["contact_name"]=$UserCompanyInfo->contact_name;
+				$resultarr["company_telephone"]=$UserCompanyInfo->company_telephone;
+				$resultarr["company_email"]=$UserCompanyInfo->company_email;
+				$resultarr["company_website"]=$UserCompanyInfo->company_website;
+				$resultarr["company_address1"]=$UserCompanyInfo->company_address1;
+				$resultarr["company_address2"]=$UserCompanyInfo->company_address2;
+				$resultarr["company_city"]=$UserCompanyInfo->company_city;
+				$resultarr["company_zipcode"]=$UserCompanyInfo->company_zipcode;
+				$resultarr["company_country_id"]=$UserCompanyInfo->company_country_id;
+				$resultarr["company_state_id"]=$UserCompanyInfo->company_state_id;
+				$resultarr["number_of_employees"]=$UserCompanyInfo->number_of_employees;
+				$resultarr["number_of_sites"]=$UserCompanyInfo->number_of_sites;
+				$resultarr["description"]=$UserCompanyInfo->description;
+				$resultarr["other_information"]=$UserCompanyInfo->other_information;
+				$resultarr["osp_details"]=$UserCompanyInfo->osp_details;
+				$resultarr["osp_number"]=$UserCompanyInfo->osp_number;
+				$resultarr["mobile"]=$UserCompanyInfo->mobile;
+				$resultarr["gst_no"]=$UserCompanyInfo->gst_no;
+
+				$resultarr['company_country']=$UserCompanyInfo->companycountry?$UserCompanyInfo->companycountry->name:'';
+				$resultarr['company_state']=$UserCompanyInfo->companystate?$UserCompanyInfo->companystate->name:'';
+				$resultarr['company_city']=$UserCompanyInfo->companycountry?$UserCompanyInfo->company_city:'';
+	
+				
+			}
+			else
+			{
+				$responsedata=array('status'=>0,'message'=>$model->errors);
+			}
+
+			return ['data'=>$resultarr];
+		}	
+	}
+
+    public function actionCommonUpdate()
+	{
+		$data = Yii::$app->request->post();
+		$responsedata=array('status'=>0,'message'=>'Something went wrong! Please try again');
+		if ($data && isset($data['status'])) 
+		{
+			$status = $data['status'];			
+			if(!Yii::$app->userrole->canDoCommonUpdate($status,'franchise'))
+			{
+				return false;
+			}			
+		
+           	$model = User::find()->where(['id' => $data['id']])->one();
+			if ($model !== null)
+			{
+				$model->status=$data['status'];
+				$userData = Yii::$app->userdata->getData();
+				$model->updated_by=$userData['userid'];			
+				if($model->validate() && $model->save())
+				{
+					$msg='';
+					if($model->status==0){
+						$msg='Brand Group has been activated successfully';
+					}elseif($model->status==1){
+						$msg='Brand Group has been deactivated successfully';
+					}elseif($model->status==2){
+						$msg='Brand Group has been deleted successfully';
+
+						 $brnmod = BrandGroup::find()->where(['user_id'=>$data['id']])->one();
+						 if($brnmod!==null && $brnmod!=''){
+							 $brnmod =$brnmod->delete();
+						 }
+					}
+					$responsedata=array('status'=>1,'message'=>$msg);
+				}
+				else
+				{
+					$arrerrors=array();
+					$errors=$model->errors;
+					if(is_array($errors) && count($errors)>0)
+					{
+						foreach($errors as $err)
+						{
+							$arrerrors[]=implode(",",$err);
+						}
+					}
+					$responsedata=array('status'=>0,'message'=>implode(",",$arrerrors));
+				}
+			}
+			else
+			{
+				$responsedata=array('status'=>0,'message'=>$model->errors);
+			}
+            return $this->asJson($responsedata);
+        }
+	}
+
 }

@@ -38,7 +38,7 @@
 					<mat-option *ngFor="let std of standardList" [value]="std.id">{{std.code}}</mat-option>
 				</mat-select>
 				&nbsp;
-				<mat-select style="width: 23%;font-size:13px;" placeholder="-- Type --" #typeFilter name="typeFilter" [(ngModel)]="service.typeFilter" multiple class="custom-select"  >
+				<mat-select style="width: 18%;font-size:13px;" placeholder="-- Type --" #typeFilter name="typeFilter" [(ngModel)]="service.typeFilter" multiple class="custom-select"  >
 					<mat-select-trigger>
 					<span *ngIf="typeFilter.value?.length == 1" >{{typeFilter.value ?  getSelectedTypeValue(typeFilter.value) : ''}}</span>
 					<span *ngIf="typeFilter.value?.length > 1" class="example-additional-selection">
@@ -46,6 +46,16 @@
 					</span>
 					</mat-select-trigger>
 					<mat-option *ngFor="let item of typelist | keyvalue" [value]="item.key">{{item.value}}</mat-option>
+				</mat-select>
+				&nbsp;
+				<mat-select style="width: 23%;font-size:13px;" placeholder="-- Brand --" #brandFilter name="brandFilter" [(ngModel)]="service.brandFilter" multiple class="custom-select"  >
+					<mat-select-trigger>
+					<span *ngIf="brandFilter.value?.length == 1" >{{brandFilter.value ?  getSelectedBrandValue(brandFilter.value) : ''}}</span>
+					<span *ngIf="brandFilter.value?.length > 1" class="example-additional-selection">
+						{{brandFilter.value.length}} {{ 'selected' }}
+					</span>
+					</mat-select-trigger>
+					<mat-option *ngFor="let br of brandList" [value]="br.id">{{br.brand_name}}</mat-option>
 				</mat-select>
 				&nbsp;
 				<ng-container  *ngIf="userType!=2">
@@ -71,7 +81,9 @@
 			  <tr>
 				<th width="5%" scope="col" class="text-center">S.No</th>
 				<th width="13%" scope="col" sortable="code" (sort)="onSort($event)" class="text-center">App. Number</th>
-				<th scope="col" sortable="company_name" (sort)="onSort($event)" >Company Name</th>	
+				<th scope="col" sortable="company_name" (sort)="onSort($event)" >Company Name</th>
+				<th scope="col"  >Brand</th>
+				<th scope="col"  >Brand Group</th>	
 				<th scope="col" class="text-center" *ngIf="userType!=2">OSS</th>				
 				<th scope="col" class="text-center">No.of Units</th>				
 				<th scope="col">Standard(s)</th>				
@@ -93,6 +105,8 @@
 				<th scope="row" class="center">{{ i+1+ service.pageNo }}</th>
 				<td class="text-center"><span style="color: #0b77d9;cursor: pointer;"><ngb-highlight [result]="application.code" [term]="service.searchTerm" (click)="open(appdetails,application.id);"></ngb-highlight></span></td>				
 				<td><ngb-highlight [result]="application.company_name"  [term]="service.searchTerm"></ngb-highlight></td>
+				<td><ngb-highlight [result]="application.brand_name"  [term]="service.searchTerm"></ngb-highlight></td>
+				<td><ngb-highlight [result]="application.brand_group"  [term]="service.searchTerm"></ngb-highlight></td>
 				<td class="text-center" *ngIf="userType!=2">{{application.oss_label}}</td>
 				<td class="text-center"><ngb-highlight [result]="application.application_unit_count"></ngb-highlight></td>
 				<td><ngb-highlight [result]="application.application_standard"></ngb-highlight></td>

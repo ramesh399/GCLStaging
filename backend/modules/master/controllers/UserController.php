@@ -1873,6 +1873,15 @@ class UserController extends \yii\rest\Controller
 										$relationmod->relation_work=$vals['sel_close']==2?$vals['spouse_work']:'';
 										$relationmod->save();
 									}
+									if($vals['sel_close2']==2){
+										$relmod = UserDeclaration::find()->where(['user_id'=>$model->id,'relation_declaration_consent'=>3])->all();
+										if(count($relmod)>0){
+											foreach($relmod as $rm){
+												$rm['relation_work']=$vals['spouse_work'];
+												$rm->save();
+											}
+										}
+									}
 								}
 							}
 						}
@@ -1929,7 +1938,9 @@ class UserController extends \yii\rest\Controller
 								$declarationmodel->re_relation_declaration_consent=$vals['sel_close2']?$vals['sel_close2']:'';
 								$declarationmodel->relation_name=$vals['name'];
 								$declarationmodel->relation_type=$vals['type_name'];
-								$declarationmodel->relation_work=$vals['spouse_work'];
+								if($vals['spouse_work']!=''){
+									$declarationmodel->relation_work=$vals['spouse_work'];
+								}
 								$declarationmodel->save();
 							// 	if($declarationmodel->save()){
 							// 	if(is_array($vals['relationDataEntries'])){
@@ -2007,7 +2018,10 @@ class UserController extends \yii\rest\Controller
 								$declarationmodel->re_relation_declaration_consent=$vals['sel_close2']?$vals['sel_close2']:'';
 								$declarationmodel->relation_name=$vals['name'];
 								$declarationmodel->relation_type=$vals['type_name'];
-								$declarationmodel->relation_work=$vals['spouse_work'];
+								if($vals['spouse_work']!=''){
+									$declarationmodel->relation_work=$vals['spouse_work'];
+								}
+								
 								$declarationmodel->save();
 
 							}

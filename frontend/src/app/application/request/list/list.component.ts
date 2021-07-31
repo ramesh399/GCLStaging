@@ -13,6 +13,7 @@ import { ApplicationDetailService } from '@app/services/application/list/applica
 import { User } from '@app/models/master/user';
 import { Standard } from '@app/services/standard';
 import { StandardService } from '@app/services/standard.service';
+import { BrandService } from '@app/services/master/brand/brand.service';
 
 
 @Component({
@@ -44,8 +45,9 @@ export class ListComponent implements OnInit {
   paginationList = PaginationList;
   commontxt = commontxt;
   @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
+  brandList: any=[];
 
-  constructor(private modalService: NgbModal, private userservice: UserService, private applicationDetail:ApplicationDetailService, public service: ApplicationListService,private authenticationService:AuthenticationService,private standardservice: StandardService) {
+  constructor(private modalService: NgbModal, private userservice: UserService, private applicationDetail:ApplicationDetailService, public service: ApplicationListService,private authenticationService:AuthenticationService,private standardservice: StandardService,private brandservice: BrandService) {
     this.applications$ = service.applications$;
     this.total$ = service.total$;   
   }
@@ -62,8 +64,12 @@ export class ListComponent implements OnInit {
       }
     });
 	
-	this.standardservice.getStandard().subscribe(res => {
-		this.standardList = res['standards'];     
+    this.standardservice.getStandard().subscribe(res => {
+      this.standardList = res['standards'];
+    });
+
+    this.brandservice.getData().subscribe(res => {
+      this.brandList = res.data;
     });
 
     this.applicationDetail.getApplicationStatusList().pipe(first())
@@ -131,6 +137,11 @@ export class ListComponent implements OnInit {
   {
     return this.standardList.find(x=> x.id==val).code;    
   }
+  getSelectedBrandValue(val)
+  {
+    return this.brandList.find(x=> x.id==val).brand_name;    
+  }
+
   
   getSelectedTypeValue(val)
   {

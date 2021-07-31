@@ -144,6 +144,9 @@ export class UserService {
     return this.http.post<any>(`${environment.apiUrl}/master/brands/fetch-user`,{id});
   }
 
+  getBrandGroupUserDetails(id): Observable<any>{
+    return this.http.post<any>(`${environment.apiUrl}/master/brand-group/fetch-user`,{id});
+  }
   getOSSuser(id): Observable<any>{
     return this.http.post<any>(`${environment.apiUrl}/master/franchise/oss-users`,id);
   }

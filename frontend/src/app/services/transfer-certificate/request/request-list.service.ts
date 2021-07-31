@@ -19,6 +19,7 @@ interface State {
   pageSize: number;
   statusFilter:any;
   standardFilter:any;
+  brandFilter:any;
   searchTerm: string;
   sortColumn: string;
   sortDirection: SortDirection;
@@ -67,6 +68,7 @@ export class RequestListService {
     sortDirection: '',
     statusFilter:'',
 	standardFilter:'',
+  brandFilter:'',
 	franchiseFilter:''  
   };
 
@@ -103,6 +105,7 @@ export class RequestListService {
   get pageSize() { return this._state.pageSize; }
   get statusFilter() { return this._state.statusFilter; }
   get standardFilter() { return this._state.standardFilter; }
+  get brandFilter() { return this._state.brandFilter; }
   get searchTerm() { return this._state.searchTerm; }
   get franchiseFilter() { return this._state.franchiseFilter; }
 
@@ -110,6 +113,7 @@ export class RequestListService {
   set pageSize(pageSize: number) { this._set({pageSize}); }
   set statusFilter(statusFilter: number) { this._set({statusFilter}); }
   set standardFilter(standardFilter: any) { this._set({standardFilter}); }
+  set brandFilter(brandFilter: any) { this._set({brandFilter}); }
   set searchTerm(searchTerm: string) { this._set({searchTerm}); }
   set sortColumn(sortColumn: string) { this._set({sortColumn}); }
   set sortDirection(sortDirection: SortDirection) { this._set({sortDirection}); }
@@ -122,7 +126,7 @@ export class RequestListService {
   
   private _search(): Observable<SearchResult> {
 
-    const {sortColumn, sortDirection, pageSize,statusFilter,standardFilter, page, searchTerm, franchiseFilter} = this._state;
+    const {sortColumn, sortDirection, pageSize,statusFilter,standardFilter,brandFilter, page, searchTerm, franchiseFilter} = this._state;
 	/*
 	this.unit_id = this.activatedRoute.snapshot.queryParams.unit_id;
 	this.audit_plan_id = this.activatedRoute.snapshot.queryParams.audit_plan_id;
@@ -131,7 +135,7 @@ export class RequestListService {
     //this.type = this.activatedRoute.snapshot.queryParams.type;
     this.type = this.activatedRoute.snapshot.data['pageType'];
 	
-    return this.http.post<SearchResult>(`${environment.apiUrl}/transfercertificate/request/index`,{type:this.type,page,pageSize,statusFilter,searchTerm,sortColumn,standardFilter,sortDirection,franchiseFilter}).pipe(
+    return this.http.post<SearchResult>(`${environment.apiUrl}/transfercertificate/request/index`,{type:this.type,page,pageSize,statusFilter,searchTerm,sortColumn,standardFilter,brandFilter,sortDirection,franchiseFilter}).pipe(
         map(result => {
           return {request:result.request,total:result.total};
         })

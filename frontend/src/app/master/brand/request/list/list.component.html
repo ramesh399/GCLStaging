@@ -42,7 +42,7 @@
                   <thead>
                   <tr>
                       <th width="3%" scope="col" class="center">S.No</th>
-                      <th scope="col" sortable="t.registration_id" (sort)="onSort($event)">GCL ID</th>
+                      <!-- <th scope="col" sortable="t.registration_id" (sort)="onSort($event)">GCL ID</th> -->
                       <th scope="col" sortable="usercompanyinfo.company_name" (sort)="onSort($event)" >Company Name</th>
                       <th scope="col" class="center" sortable="usercompanyinfo.osp_number" (sort)="onSort($event)" >Brand Group</th>
                       <!--
@@ -58,7 +58,7 @@
                     <tbody>
                     <tr *ngFor="let brand of brands$ | async; let i=index; ">
                       <th scope="row" class="center">{{  1+ i + service.pageNo }}</th>
-                      <td><ngb-highlight [result]="brand.registration_id" [term]="service.searchTerm"></ngb-highlight></td>
+                      <!-- <td><ngb-highlight [result]="brand.registration_id" [term]="service.searchTerm"></ngb-highlight></td> -->
                       <td><ngb-highlight [result]="brand.company_name" [term]="service.searchTerm"></ngb-highlight></td>
                       <td class="center"><ngb-highlight [result]="brand.brand_group" [term]="service.searchTerm"></ngb-highlight></td>
                       <td><ngb-highlight [result]="brand.company_country" [term]="service.searchTerm"></ngb-highlight></td>

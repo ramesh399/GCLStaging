@@ -16,6 +16,7 @@ import { StandardService } from '@app/services/standard.service';
 import {saveAs} from 'file-saver';
 import { User } from '@app/models/master/user';
 import { UserService } from '@app/services/master/user/user.service';
+import { BrandService } from '@app/services/master/brand/brand.service';
 
 
 @Component({
@@ -53,8 +54,9 @@ export class ListRequestComponent implements OnInit {
   userdetails:any;
   userdecoded:any;
   franchiseList:User[];
+  brandList: any=[];
 
-  constructor(public service: RequestListService,private modalService: NgbModal,private errorSummary: ErrorSummaryService, private authservice:AuthenticationService,private standardservice: StandardService,private router:Router,private userservice: UserService) {
+  constructor(public service: RequestListService,private modalService: NgbModal,private errorSummary: ErrorSummaryService, private authservice:AuthenticationService,private standardservice: StandardService,private router:Router,private userservice: UserService,private brandservice: BrandService) {
     this.requests$ = service.request$;
     this.total$ = service.total$;
     
@@ -88,6 +90,10 @@ export class ListRequestComponent implements OnInit {
     
     this.standardservice.getStandard().subscribe(res => {
       this.standardList = res['standards'];     
+    });
+
+    this.brandservice.getData().subscribe(res => {
+      this.brandList = res.data;
     });
 	
 	this.userservice.getAllUser({type:3}).pipe(first())
@@ -258,6 +264,11 @@ export class ListRequestComponent implements OnInit {
     getSelectedValue(val)
     {
       return this.standardList.find(x=> x.id==val).code;    
+    }
+
+    getSelectedBrandValue(val)
+    {
+      return this.brandList.find(x=> x.id==val).brand_name;    
     }
     
     resetBtn()

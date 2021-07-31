@@ -26,7 +26,7 @@
 						<option  *ngFor="let item of statuslist | keyvalue" value="{{item.key}}">{{item.value}}</option>
 					</select>
 					&nbsp;&nbsp;
-					<mat-select style="width: 30%;font-size:13px;" placeholder="-- Standard --" #standardFilter name="standardFilter" [(ngModel)]="service.standardFilter" multiple class="custom-select"  >
+					<mat-select style="width: 23%;font-size:13px;" placeholder="-- Standard --" #standardFilter name="standardFilter" [(ngModel)]="service.standardFilter" multiple class="custom-select"  >
 						<mat-select-trigger>
 						<span *ngIf="standardFilter.value?.length == 1" >{{standardFilter.value ?  getSelectedValue(standardFilter.value) : ''}}</span>
 						<span *ngIf="standardFilter.value?.length > 1" class="example-additional-selection">
@@ -36,8 +36,17 @@
 						<mat-option *ngFor="let std of standardList" [value]="std.id">{{std.code}}</mat-option>
 					</mat-select>
 					&nbsp;
+					<mat-select *ngIf="userdetails.rules.includes('brand_management')" style="width: 23%;font-size:13px;" placeholder="-- Brand --" #brandFilter name="brandFilter" [(ngModel)]="service.brandFilter" multiple class="custom-select"  >
+						<mat-select-trigger>
+						<span *ngIf="brandFilter.value?.length == 1" >{{brandFilter.value ?  getSelectedBrandValue(brandFilter.value) : ''}}</span>
+						<span *ngIf="brandFilter.value?.length > 1" class="example-additional-selection">
+							{{brandFilter.value.length}} {{ 'selected' }}
+						</span>
+						</mat-select-trigger>
+						<mat-option *ngFor="let br of brandList" [value]="br.id">{{br.brand_name}}</mat-option>
+					</mat-select>
 					<ng-container  *ngIf="userType!=2">
-						<mat-select style="width: 30%;font-size:13px;" placeholder="-- OSS --" #franchiseFilter name="franchiseFilter" [(ngModel)]="service.franchiseFilter" multiple class="custom-select"  >
+						<mat-select style="width: 23%;font-size:13px;" placeholder="-- OSS --" #franchiseFilter name="franchiseFilter" [(ngModel)]="service.franchiseFilter" multiple class="custom-select"  >
 							<mat-select-trigger>
 							<span *ngIf="franchiseFilter.value?.length == 1" >{{franchiseFilter.value ?  getSelectedFranchiseValue(franchiseFilter.value) : ''}}</span>
 							<span *ngIf="franchiseFilter.value?.length > 1" class="example-additional-selection">
@@ -60,6 +69,8 @@
 							<th width="5%" scope="col" class="text-center">S.No</th>
 							<th class="text-center" scope="col" (sort)="onSort($event)">Temp TC No / TC No</th>
 							<th scope="col" (sort)="onSort($event)">Company Name</th>
+							<th scope="col" (sort)="onSort($event)">Brand</th>
+							<th scope="col" (sort)="onSort($event)">Brand Group</th>
 							<th scope="col" *ngIf="userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management'))">OSS</th>
 							<th scope="col" (sort)="onSort($event)">Standard</th>
 							<th scope="col" >Country</th>
@@ -87,6 +98,8 @@
 							<th scope="row" class="text-center">{{  1+ i + service.pageNo }}</th>
 							<td class="text-center"><ngb-highlight [result]="request.tc_number" [term]="service.searchTerm"></ngb-highlight></td>
 							<td><ngb-highlight [result]="request.app_id_label" [term]="service.searchTerm"></ngb-highlight></td>
+							<td><ngb-highlight [result]="request.brand_name" [term]="service.searchTerm"></ngb-highlight></td>
+							<td><ngb-highlight [result]="request.brand_group" [term]="service.searchTerm"></ngb-highlight></td>
 							<td class="text-center" *ngIf="userType==2 || userType==3 || (userType==1 && !userdetails.rules.includes('brand_management'))">{{ request.oss_label }}</td>
 							<td><ngb-highlight [result]="request.standard_id_code_label" [term]="service.searchTerm"></ngb-highlight></td>
 							<td><ngb-highlight [result]="request.country_of_dispach_name" [term]="service.searchTerm"></ngb-highlight></td>
@@ -109,9 +122,10 @@
 							<td class="text-center"><ngb-highlight [result]="request.created_at" [term]="service.searchTerm"></ngb-highlight></td>
 							<td class="text-center">{{ request.approved_date }}</td>
 							<td class="text-center">
-								<a href="javascript:void(0);" *ngIf="(!userdetails.rules.includes('brand_management'))" [routerLink]="['/transaction-certificate/request/view']" [queryParams]="{id:request.id}" title="View" alt="View"><i class="fa fa-eye"></i> </a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  [routerLink]="['/transaction-certificate/request/view']" [queryParams]="{id:request.id}" title="View" alt="View"><i class="fa fa-eye"></i> </a>&nbsp;&nbsp;
 								<a href="javascript:void(0);" *ngIf="request.showedit" [routerLink]="['/transaction-certificate/request/edit']" [queryParams]="{id:request.id,app_id:request.app_id}" title="Edit" alt="Edit"><i class="fa fa-edit"></i></a>
-								<a href="javascript:void(0);" *ngIf="request.showpdf && (userdetails.resource_access==1 || userType!=1 || (userType==1 && !userdetails.rules.includes('brand_management')) ||(userType==1 && userdetails.rules.includes('brand_management') && request.brand_consent==1) ) " (click)="openmodal(downloading);DownloadFile(request.id,request.tc_filename)" class="pl-2" title="Download" alt="Download"><i class="fa fa-file-pdf-o text-danger"></i></a>	
+								<!-- <a href="javascript:void(0);" *ngIf="request.showpdf && (userdetails.resource_access==1 || userType!=1 || (userType==1 && !userdetails.rules.includes('brand_management')) ||(userType==1 && userdetails.rules.includes('brand_management') && request.brand_consent==1) ) " (click)="openmodal(downloading);DownloadFile(request.id,request.tc_filename)" class="pl-2" title="Download" alt="Download"><i class="fa fa-file-pdf-o text-danger"></i></a>	 -->
+								<a href="javascript:void(0);" *ngIf="request.showpdf" (click)="openmodal(downloading);DownloadFile(request.id,request.tc_filename)" class="pl-2" title="Download" alt="Download"><i class="fa fa-file-pdf-o text-danger"></i></a>	
 								<a href="javascript:void(0);" *ngIf="request.showdelete" (click)="open(commonModel,'delete',request.id)" class="pl-2" title="Delete" alt="Delete"><i class="fa fa-trash text-danger"></i></a>
                 				<a href="javascript:void(0);" *ngIf="request.showcopy" (click)="open(commonModel,'copy',request.id)" class="pl-2" title="Clone TC Request" alt="Clone TC Request"><i class="fa fa-copy"></i></a>	
 							</td>

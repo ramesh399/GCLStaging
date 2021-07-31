@@ -17,6 +17,7 @@ import { StandardService } from '@app/services/standard.service';
 import { ErrorSummaryService } from '@app/helpers/errorsummary.service';
 import { User } from '@app/models/master/user';
 import { UserService } from '@app/services/master/user/user.service';
+import { BrandService } from '@app/services/master/brand/brand.service';
 
 
 @Component({
@@ -51,8 +52,9 @@ export class ListAuditPlanComponent {
   auditStatus:any;
   standardList:Standard[];
   franchiseList:User[];
+  brandList: any=[];
   
-  constructor(private modalService: NgbModal, private fb:FormBuilder, public service: ListAuditPlanService, public uauditservice: UnannouncedAuditListService, public errorSummary: ErrorSummaryService, private router: Router, private authservice:AuthenticationService,private standardservice: StandardService,private userservice: UserService) {
+  constructor(private modalService: NgbModal, private fb:FormBuilder, public service: ListAuditPlanService, public uauditservice: UnannouncedAuditListService, public errorSummary: ErrorSummaryService, private router: Router, private authservice:AuthenticationService,private standardservice: StandardService,private userservice: UserService,private brandservice: BrandService) {
     this.listauditplan$ = service.listauditplan$;
     this.total$ = service.total$;   
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -68,6 +70,10 @@ export class ListAuditPlanComponent {
 	
 	  this.standardservice.getStandard().subscribe(res => {
 		  this.standardList = res['standards'];     
+    });
+
+    this.brandservice.getData().subscribe(res => {
+      this.brandList = res.data;
     });
 
     this.authservice.currentUser.subscribe(x => {
@@ -125,6 +131,11 @@ export class ListAuditPlanComponent {
   getSelectedValue(val)
   {
     return this.standardList.find(x=> x.id==val).code;    
+  }
+
+  getSelectedBrandValue(val)
+  {
+    return this.brandList.find(x=> x.id==val).brand_name;    
   }
 
   getSelectedStdValue(val)

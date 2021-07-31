@@ -113,7 +113,7 @@
                         <div class="form-group row">
                             
                             <div class="col-4">
-                                <label>Company Name <span class="text-danger">*</span></label>
+                                <label>Company/Group Name <span class="text-danger">*</span></label>
                                 <input type="text" formControlName="company_name" [class.is-invalid]="f.company_name.invalid && f.company_name.touched " class="form-control" placeholder="Company Name" >
                                 <div *ngIf="f.company_name.errors" class="invalid-feedback">
                                     <div *ngIf="f.company_name.errors.required" >Company Name is required</div>

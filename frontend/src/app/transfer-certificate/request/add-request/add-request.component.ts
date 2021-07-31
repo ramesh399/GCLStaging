@@ -1375,6 +1375,47 @@ export class AddRequestComponent implements OnInit {
       
     
   } 
+  
+  
+    cloneProductData(data){
+    
+    this.productdata = '';
+
+    let dataproduct:any = {tc_request_id:this.id,product_id:data.product_id,trade_name:data.trade_name,packed_in:data.packed_in,lot_ref_number:data.lot_ref_number,gross_weight:data.gross_weight,net_weight:data.net_weight,certified_weight:data.certified_weight,unit_information:data.unit_information,purchase_order_no:data.purchase_order_no,purchase_order_date:data.purchase_order_date,invoice_no:data.invoice_no,transport_document_no:data.transport_document_no,invoice_date:data.invoice_date,transport_document_date:data.transport_document_date,transport_company_name:data.transport_company_name,vehicle_container_no:data.vehicle_container_no,transport_id:data.transport_id,consignee_id:data.consignee_id};
+		if(this.productdata){
+			dataproduct.id = this.productdata.id;
+		}
+		this.productloading['logsbutton'] = true;
+
+		this.requestservice.addProductData(dataproduct)
+		.pipe(first())
+		.subscribe(res => {
+
+          if(res.status){           
+			      this.getProductData(this.id);
+            this.productsuccess = res.message;
+            setTimeout(() => {
+    				this.productsuccess = '';
+    				this.productdata = '';
+    				this.buttonDisable = false;
+    				this.productloading['logsbutton'] = false; 
+    				this.modalss.close('');
+            },this.errorSummary.redirectTime);
+                        
+          }else if(res.status == 0){
+      			this.productloading['logsbutton'] = false;          
+      			this.buttonDisable = false;
+            this.producterror = {summary:res};
+          }
+          
+		},
+		error => {
+          this.productloading['logsbutton'] = false;
+          this.producterror = {summary:error};
+          
+		});
+  }
+
 
   fnDeleteProduct()
   {

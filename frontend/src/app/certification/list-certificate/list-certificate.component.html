@@ -69,6 +69,8 @@
 				
 				
 				<th scope="col">Company Name</th>
+				<!-- <th class="center" scope="col" (sort)="onSort($event)" width="7%">Brand</th>
+				<th class="center" scope="col" (sort)="onSort($event)" width="7%">Brand Group</th> -->
 				<th scope="col">Country</th>
 				
 				<!--
@@ -107,6 +109,8 @@
 				<!--<td><ngb-highlight [result]="offer.email_address" [term]="service.searchTerm"></ngb-highlight></td>-->
 
 				<td><ngb-highlight [result]="offer.company_name" [term]="service.searchTerm"></ngb-highlight></td>
+				<!-- <td><ngb-highlight [result]="offer.brand_name" [term]="service.searchTerm"></ngb-highlight></td>
+				<td><ngb-highlight [result]="offer.brand_group" [term]="service.searchTerm"></ngb-highlight></td> -->
 				<td><ngb-highlight [result]="offer.application_country" [term]="service.searchTerm"></ngb-highlight></td>
 				
 				<!--

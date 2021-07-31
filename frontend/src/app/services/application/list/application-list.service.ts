@@ -22,6 +22,7 @@ interface State {
   sortColumn: string;
   sortDirection: SortDirection;
   standardFilter:any;
+  brandFilter:any;
   typeFilter:any;
   franchiseFilter:any;
 }
@@ -67,6 +68,7 @@ export class ApplicationListService {
     sortDirection: '',
     statusFilter:'',
 	  standardFilter:'',
+    brandFilter:'',
 	  typeFilter:'',
 	  franchiseFilter:''
   };
@@ -102,6 +104,7 @@ export class ApplicationListService {
   get pageSize() { return this._state.pageSize; }
   get searchTerm() { return this._state.searchTerm; }
   get standardFilter() { return this._state.standardFilter; }
+  get brandFilter() { return this._state.brandFilter; }
   get typeFilter() { return this._state.typeFilter; }
   get franchiseFilter() { return this._state.franchiseFilter; }
   
@@ -112,6 +115,7 @@ export class ApplicationListService {
   set sortColumn(sortColumn: string) { this._set({sortColumn}); }
   set sortDirection(sortDirection: SortDirection) { this._set({sortDirection}); }
   set standardFilter(standardFilter: any) { this._set({standardFilter}); }
+  set brandFilter(brandFilter: any) { this._set({brandFilter}); }
   set typeFilter(typeFilter: any) { this._set({typeFilter}); }
   set franchiseFilter(franchiseFilter: any) { this._set({franchiseFilter}); }
 
@@ -122,7 +126,7 @@ export class ApplicationListService {
 
   private _search(): Observable<SearchResult> {
 
-    const {sortColumn, sortDirection, statusFilter, pageSize, page, searchTerm, standardFilter, typeFilter, franchiseFilter} = this._state;
+    const {sortColumn, sortDirection, statusFilter, pageSize, page, searchTerm, standardFilter,brandFilter, typeFilter, franchiseFilter} = this._state;
     //console.log(sortColumn+sortDirection);
     // 1. sort
     //let countries = sort(COUNTRIES, sortColumn, sortDirection);
@@ -141,7 +145,7 @@ export class ApplicationListService {
     params = params.append('pageSize', ''+pageSize);
     */
 
-    return this.http.post<SearchResult>(`${environment.apiUrl}/application/apps/index`,{page,pageSize,searchTerm,statusFilter,sortColumn,sortDirection,standardFilter, typeFilter, franchiseFilter}).pipe(
+    return this.http.post<SearchResult>(`${environment.apiUrl}/application/apps/index`,{page,pageSize,searchTerm,statusFilter,sortColumn,sortDirection,standardFilter,brandFilter, typeFilter, franchiseFilter}).pipe(
         map(result => {
           return {applications:result.applications,total:result.total};
         })

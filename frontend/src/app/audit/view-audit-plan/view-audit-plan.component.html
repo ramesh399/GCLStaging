@@ -1616,7 +1616,7 @@
         Download Audit Plan as PDF</button>
 		-->
 
-        <button type="button" *ngIf="(auditPlanData.plan_status >= auditPlanData.arrEnumPlanStatus['audit_completed']  || auditPlanData.plan_status == auditPlanData.arrEnumPlanStatus['remediation_in_progress'])&& (userType==2  || userType==3 || userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('audit_execution')) || (userType==1 && userdetails.uid==auditPlanData.application_lead_auditor && userdetails.rules.includes('audit_execution')) || (userType==1 && userdetails.uid==auditPlanData.reviewer_id )) " [disabled]="loading" class="btn but-cust green m-b-5 ml-2 mr-2" (click)="downloadNCreport(this.id,auditPlanData.id);openmodal(downloading)">
+        <button type="button" *ngIf="(auditPlanData.plan_status >= auditPlanData.arrEnumPlanStatus['audit_completed']  || auditPlanData.plan_status == auditPlanData.arrEnumPlanStatus['remediation_in_progress'])&& (userType==2  || userType==3 || userdetails.resource_access==1 || (userType==1 && userdetails.rules.includes('audit_execution')) || (userType==1 && userdetails.rules.includes('brand_management')) || (userType==1 && userdetails.uid==auditPlanData.application_lead_auditor && userdetails.rules.includes('audit_execution')) || (userType==1 && userdetails.uid==auditPlanData.reviewer_id )) " [disabled]="loading" class="btn but-cust green m-b-5 ml-2 mr-2" (click)="downloadNCreport(this.id,auditPlanData.id);openmodal(downloading)">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             Download NC Report
         </button>

@@ -455,7 +455,7 @@ class ConfigVariables
 
 			//'tempDir' => __DIR__ . '/../../tmp',
 			
-			'tempDir' =>'/usr/local/www/apache24/data/demo/backend/web/temp',
+			'tempDir' =>'C:\xampp\htdocs\GCLStaging\backend\web\temp',
 
 			'allowAnnotationFiles' => false,
 

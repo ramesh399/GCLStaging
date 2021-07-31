@@ -6934,10 +6934,15 @@ class AuditPlanController extends \yii\rest\Controller
 				OR (tbl_audit.audit_type=2 AND tbl_audit.followup_status=1 )
 				OR (tbl_audit.audit_type=2 AND plan.share_plan_to_customer =2 AND  tbl_audit.status>='.$modelAudit->arrEnumStatus["awaiting_for_customer_approval"].' ) )');
 				//$model = $model->join('inner join', 'tbl_application as app','t.app_id=app.id and app.customer_id="'.$userid.'"');	
-			}else if($user_type==1 && in_array('brand_management',$rules) && $is_headquarters==1){
+			}else if($user_type==1 && in_array('view_brand',$rules) && $is_headquarters==1){
 				$model = $model->join('inner join','tbl_application_brands as appbrand','app.id=appbrand.app_id');
 				$model = $model->join('inner join','tbl_brands as bran','bran.id=appbrand.brand_id');
 				$model = $model->andWhere(['bran.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved'],'tbl_audit.audit_type'=>1]);
+			}else if($user_type==1 && in_array('brand_report',$rules) && $is_headquarters==1){
+				$model = $model->join('inner join','tbl_application_brands as appbrand','app.id=appbrand.app_id');
+				$model = $model->join('inner join','tbl_brands as bran','bran.id=appbrand.brand_id');
+				$model = $model->join('inner join', 'tbl_brand_group as bg','bran.brand_group_id=bg.id');
+				$model = $model->andWhere(['bg.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved'],'tbl_audit.audit_type'=>1]);
 			}
 			/*
 			else if($user_type==3 && $role!=0 && ! in_array('view_invoice',$rules) ){
@@ -7045,6 +7050,10 @@ class AuditPlanController extends \yii\rest\Controller
 				$model->innerJoinWith(['application as app']);
 			}						
 			$model = $model->andWhere(['app.franchise_id'=> $post['franchiseFilter']]);	
+		}
+		if(isset($post['brandFilter']) && is_array($post['brandFilter']) && count($post['brandFilter'])>0)
+		{
+			$model = $model->andWhere(['bran.id'=> $post['brandFilter']]);	
 		}
 
 		$model = $model->groupBy(['tbl_audit.id']);
@@ -7180,6 +7189,32 @@ class AuditPlanController extends \yii\rest\Controller
 					
 					$data['audit_standard'] = $standardarr;
 					$data['application_standard']=implode(', ',$arrAppStd);
+
+					$brandname=array();
+					$brandgroup=array();
+
+						$appbrandmodel = $audit->application->applicationbrands;
+						if(count($appbrandmodel)>0){
+							foreach($appbrandmodel as $brmod){
+								if($user_type==2){
+									$brandname[]=$brmod->brands->name;
+									$brandgroup[]=$brmod->brands->brandgroup->name;
+								}else if(in_array('brand_report',$rules)){
+									if($brmod->brands->brandgroup->user_id==$userid){
+										$brandname[]=$brmod->brands->name;
+										$brandgroup[]=$brmod->brands->brandgroup->name;
+									}
+								}else if(in_array('view_brand',$rules)){
+									if($brmod->brands->user_id==$userid){
+										$brandname[]=$brmod->brands->name;
+										$brandgroup[]=$brmod->brands->brandgroup->name;
+									}
+								}	
+							}
+						}
+						$data['brand_name']=implode(', ',$brandname);
+						$data['brand_group']=implode(', ',array_unique($brandgroup));
+
 				}			
 				
 				$app_list[]=$data;

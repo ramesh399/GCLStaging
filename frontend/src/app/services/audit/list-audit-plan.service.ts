@@ -21,6 +21,7 @@ interface State {
   sortColumn: string;
   sortDirection: SortDirection;
   standardFilter:any;
+  brandFilter:any;
   riskFilter:any;
   franchiseFilter:any;
 }
@@ -66,6 +67,7 @@ export class ListAuditPlanService {
     sortDirection: '',
     statusFilter:'',
     standardFilter:'',
+    brandFilter:'',
     riskFilter:'',
 	franchiseFilter:''
   };
@@ -101,6 +103,7 @@ export class ListAuditPlanService {
   get searchTerm() { return this._state.searchTerm; }
   get pageNo() { return (this._state.page - 1) * this._state.pageSize; }
   get standardFilter() { return this._state.standardFilter; }
+  get brandFilter() { return this._state.brandFilter; }
   get riskFilter() { return this._state.riskFilter; }
   get franchiseFilter() { return this._state.franchiseFilter; }
 
@@ -111,6 +114,7 @@ export class ListAuditPlanService {
   set sortColumn(sortColumn: string) { this._set({sortColumn}); }
   set sortDirection(sortDirection: SortDirection) { this._set({sortDirection}); }
   set standardFilter(standardFilter: any) { this._set({standardFilter}); }
+  set brandFilter(brandFilter: any) { this._set({brandFilter}); }
   set riskFilter(riskFilter: any) { this._set({riskFilter}); }
   set franchiseFilter(franchiseFilter: any) { this._set({franchiseFilter}); }
 
@@ -122,7 +126,7 @@ export class ListAuditPlanService {
 
   private _search(): Observable<SearchResult> {
 
-    const {sortColumn, sortDirection, statusFilter, pageSize, page, searchTerm, standardFilter, riskFilter, franchiseFilter} = this._state;
+    const {sortColumn, sortDirection, statusFilter, pageSize, page, searchTerm, standardFilter,brandFilter, riskFilter, franchiseFilter} = this._state;
     //console.log(sortColumn+sortDirection);
     // 1. sort
     //let countries = sort(COUNTRIES, sortColumn, sortDirection);
@@ -141,7 +145,7 @@ export class ListAuditPlanService {
     params = params.append('pageSize', ''+pageSize);
     */
 
-    return this.http.post<SearchResult>(`${environment.apiUrl}/audit/audit-plan/list-audit-plan`,{type:'audit',page,statusFilter,pageSize,searchTerm,sortColumn,sortDirection,standardFilter,riskFilter,franchiseFilter}).pipe(
+    return this.http.post<SearchResult>(`${environment.apiUrl}/audit/audit-plan/list-audit-plan`,{type:'audit',page,statusFilter,pageSize,searchTerm,sortColumn,sortDirection,standardFilter,brandFilter,riskFilter,franchiseFilter}).pipe(
         map(result => {
           return {listauditplan:result.listauditplan,total:result.total};
         })

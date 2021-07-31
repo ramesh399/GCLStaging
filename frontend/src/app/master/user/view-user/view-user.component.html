@@ -2051,11 +2051,18 @@
 				<th width="20%">Comments</th>
 				<td colspan="3">{{ decData.approval_comment }}</td>
 			</tr>
-			<tr>
+			<tr *ngIf="decData.relation_consent==3">
+				<th width="20%">Close Relations Declaration</th>
+				<td width="30%">No</td>
+				<th width="20%">Spouse's Work</th>
+				<td width="30%">{{ decData.relation_work }}</td>
+
+			</tr>
+			<tr *ngIf="decData.relation_consent!=3">
 				<th width="20%">Close Relations Declaration</th>
 				<td width="30%">{{ userData.relAnsList[decData.relation_consent] }}</td>
-				<th width="20%">Relation's Work</th>
-				<td width="30%">{{ decData.relation_work }}</td>
+				<th width="20%" *ngIf="decData.relation_consent!=1">Relation's Work</th>
+				<td width="30%" *ngIf="decData.relation_consent!=1">{{ decData.relation_work }}</td>
 
 			</tr>
 			<tr>

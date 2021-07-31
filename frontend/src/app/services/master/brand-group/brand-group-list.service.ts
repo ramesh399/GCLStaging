@@ -177,6 +177,6 @@ export class BrandGroupListService {
   };
 
   commonActionData(data): Observable<any>{
-    return this.http.post<any>(`${environment.apiUrl}/master/brands/common-update`,data);
+    return this.http.post<any>(`${environment.apiUrl}/master/brand-group/common-update`,data);
   } 
 }

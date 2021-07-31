@@ -42,8 +42,8 @@
                   <thead>
                   <tr>
                       <th width="3%" scope="col" class="center">S.No</th>
-                      <th scope="col" sortable="t.registration_id" (sort)="onSort($event)">GCL ID</th>
-                      <th scope="col" sortable="usercompanyinfo.company_name" (sort)="onSort($event)" >Company Name</th>
+                      <!-- <th scope="col" sortable="t.registration_id" (sort)="onSort($event)">GCL ID</th> -->
+                      <th scope="col" sortable="usercompanyinfo.company_name" (sort)="onSort($event)" >Company/Group Name</th>
                      
                       <!--
                       <th scope="col" sortable="usercompanyinfo.contact_name" (sort)="onSort($event)" >Contact Name</th>
@@ -58,7 +58,7 @@
                     <tbody>
                     <tr *ngFor="let brand of brands$ | async; let i=index; ">
                       <th scope="row" class="center">{{  1+ i + service.pageNo }}</th>
-                      <td><ngb-highlight [result]="brand.registration_id" [term]="service.searchTerm"></ngb-highlight></td>
+                      <!-- <td><ngb-highlight [result]="brand.registration_id" [term]="service.searchTerm"></ngb-highlight></td> -->
                       <td><ngb-highlight [result]="brand.company_name" [term]="service.searchTerm"></ngb-highlight></td> 
                       <td><ngb-highlight [result]="brand.company_country" [term]="service.searchTerm"></ngb-highlight></td>
                       <td><ngb-highlight [result]="brand.company_telephone" [term]="service.searchTerm"></ngb-highlight></td>
@@ -68,7 +68,7 @@
                       <td><a href="mailto:{{ brand.company_email }}"><ngb-highlight [result]="brand.company_email" [term]="service.searchTerm"></ngb-highlight></a></td>
                       <td class="center"><ngb-highlight [result]="brand.created_at" [term]="service.searchTerm"></ngb-highlight></td>
                         <td class="text-center">
-                            <a href="javascript:void(0);" *ngIf="userdetails.resource_access==1 || userdetails.rules.includes('franchise_master')" [routerLink]="['/master/brand-group/request/view']" [queryParams]="{id:brand.id}" title="View" alt="View"><i class="fa fa-eye"></i></a>
+                            <a href="javascript:void(0);" *ngIf="userdetails.resource_access==1 || userdetails.rules.includes('view_brand')" [routerLink]="['/master/brand-group/request/view']" [queryParams]="{id:brand.id}" title="View" alt="View"><i class="fa fa-eye"></i></a>
                             <!-- <a href="javascript:void(0);" [routerLink]="['/master/franchise/edit']" [queryParams]="{id:franchise.id}" class="pl-2" title="Edit" alt="Edit" *ngIf="userdetails.resource_access==1 || userdetails.rules.includes('edit_franchise')"><i class="fa fa-edit"></i></a>
                             
                             <a href="javascript:void(0);" *ngIf="franchise.showRoyaltyFee" [routerLink]="['/master/franchise/add-royalty']" [queryParams]="{franchise_id:franchise.id}" title="Add Royalty Fee" alt="Add Royalty Fee" class="pl-2"><i class="fa fa-money"></i></a>
