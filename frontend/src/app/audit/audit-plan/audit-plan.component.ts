@@ -137,6 +137,7 @@ export class AuditPlanComponent implements OnInit {
 						this.auditplanlist['translator_'+units.id] = units.translator?units.translator:"";
 						this.auditplanlist['unit_date_'+units.id] = units.unitdates.join(' | ');
 						this.auditplanlist['observer_'+units.id] = units.observer;
+						this.auditplanlist['trainee_auditor_'+units.id] = units.trainee_auditor;
 					}
 
 					if(units.auditordetails !==undefined && units.auditordetails.length >0){
@@ -1279,7 +1280,7 @@ export class AuditPlanComponent implements OnInit {
 			unitMandayErr.push(value.name);
 		}
 
-        let unitData = {unit_id:unitid,unit_lead_auditor:this.auditplanlist['lead_auditor_'+unitid],technical_expert:this.auditplanlist['technical_expert_'+unitid],translator:this.auditplanlist['translator_'+unitid],standard:unitStd,date:unitSelectedD,auditor:unitAuditorWithDate,quotation_manday:value.quotation_manday,actual_manday:this.appActualMandayData[key],observer:this.auditplanlist['observer_'+unitid]};
+        let unitData = {unit_id:unitid,unit_lead_auditor:this.auditplanlist['lead_auditor_'+unitid],technical_expert:this.auditplanlist['technical_expert_'+unitid],translator:this.auditplanlist['translator_'+unitid],standard:unitStd,date:unitSelectedD,auditor:unitAuditorWithDate,quotation_manday:value.quotation_manday,actual_manday:this.appActualMandayData[key],observer:this.auditplanlist['observer_'+unitid],trainee_auditor:this.auditplanlist['trainee_auditor_'+unitid]};
 		unit_data.push(unitData);
     });
 	//return false;

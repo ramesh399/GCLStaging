@@ -207,7 +207,7 @@ class Request extends \yii\db\ActiveRecord
 
     public function getTcbrandconsent()
 	{
-        return $this->hasMany(TcRequestBrandConsent::className(),['tc_request_id'=>'id']);
+        return $this->hasOne(TcRequestBrandConsent::className(),['tc_request_id'=>'id']);
     }
 
     public function getCountry()

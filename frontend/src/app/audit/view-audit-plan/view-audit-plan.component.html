@@ -202,6 +202,10 @@
                                     <th width="20%">Status Changed Date</th>
                                     <td colspan="3">{{unit.status_change_date}}</td>
                                 </tr>
+                                <tr>
+                                    <th width="20%">Trainee Auditor</th>
+                                    <td width="30%">{{unit.trainee_auditor}}</td>
+                                </tr>
                                 <tr *ngIf="auditPlanData.status >= auditPlanData.arrEnumStatus['approved']">
                                     <th width="20%">Total Findings</th>
                                     <td width="30%">{{unit.total_findings}}</td>

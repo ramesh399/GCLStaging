@@ -192,13 +192,13 @@ class RequestController extends \yii\rest\Controller
 					$model = $model->join('inner join','tbl_application as app','app.id=t.app_id');
 					$model = $model->join('inner join','tbl_application_brands as appbrand','app.id=appbrand.app_id');
 					$model = $model->join('inner join','tbl_brands as bran','bran.id=appbrand.brand_id');
-					$model = $model->andWhere(['bran.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved']]);
+					$model = $model->andWhere(['bran.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved'],'t.is_brand_consent'=>1]);
 				}else if($user_type==1 && in_array('brand_report',$rules) && $is_headquarters==1){
 					$model = $model->join('inner join','tbl_application as app','app.id=t.app_id');
 					$model = $model->join('inner join','tbl_application_brands as appbrand','app.id=appbrand.app_id');
 					$model = $model->join('inner join','tbl_brands as bran','bran.id=appbrand.brand_id');
 					$model = $model->join('inner join','tbl_brand_group as bg','bran.brand_group_id=bg.id');
-					$model = $model->andWhere(['bg.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved']]);
+					$model = $model->andWhere(['bg.user_id'=>$userid])->andWhere(['appbrand.status'=>$applicationmod->arrBrandEnumStatus['approved'],'t.is_brand_consent'=>1]);
 				}
 					
 			}
@@ -300,6 +300,10 @@ class RequestController extends \yii\rest\Controller
 					$data['brand_consent']=$modelData->is_brand_consent;
 					//$data['consignee_id']=$modelData->consignee_id;
 
+					$data['brand_id']=$modelData->tcbrandconsent->brand_id;
+					$data['brand_name']=$modelData->tcbrandconsent->brand->name;
+					$data['brand_group']=$modelData->tcbrandconsent->brand->brandgroup->name;
+
 					$data['tc_number']=($modelData->arrEnumStatus['approved']==$modelData->status ? $modelData->tc_number : 'TEMP'.$modelData->id);
 					$data['tc_number_cds']=$modelData->tc_number_cds;
 
@@ -380,30 +384,30 @@ class RequestController extends \yii\rest\Controller
 						$data['approved_date']=date($date_format,$modelData->currentreviewercmt->created_at);	
 					}
 					
-					$brandname=array();
-				    $brandgroup=array();
+					// $brandname=array();
+				    // $brandgroup=array();
 
-						$appbrandmodel = $modelData->application->applicationbrands;
-						if(count($appbrandmodel)>0){
-							foreach($appbrandmodel as $brmod){
-								if($user_type==2){
-									$brandname[]=$brmod->brands->name;
-									$brandgroup[]=$brmod->brands->brandgroup->name;
-								}else if(in_array('brand_report',$rules)){
-									if($brmod->brands->brandgroup->user_id==$userid){
-										$brandname[]=$brmod->brands->name;
-										$brandgroup[]=$brmod->brands->brandgroup->name;
-									}
-								}else if(in_array('view_brand',$rules)){
-									if($brmod->brands->user_id==$userid){
-										$brandname[]=$brmod->brands->name;
-										$brandgroup[]=$brmod->brands->brandgroup->name;
-									}
-								}	
-							}
-						}
-						$data['brand_name']=implode(', ',$brandname);
-						$data['brand_group']=implode(', ',array_unique($brandgroup));
+					// 	$appbrandmodel = $modelData->application->applicationbrands;
+					// 	if(count($appbrandmodel)>0){
+					// 		foreach($appbrandmodel as $brmod){
+					// 			if($user_type==2){
+					// 				$brandname[]=$brmod->brands->name;
+					// 				$brandgroup[]=$brmod->brands->brandgroup->name;
+					// 			}else if(in_array('brand_report',$rules)){
+					// 				if($brmod->brands->brandgroup->user_id==$userid){
+					// 					$brandname[]=$brmod->brands->name;
+					// 					$brandgroup[]=$brmod->brands->brandgroup->name;
+					// 				}
+					// 			}else if(in_array('view_brand',$rules)){
+					// 				if($brmod->brands->user_id==$userid){
+					// 					$brandname[]=$brmod->brands->name;
+					// 					$brandgroup[]=$brmod->brands->brandgroup->name;
+					// 				}
+					// 			}	
+					// 		}
+					// 	}
+					// 	$data['brand_name']=implode(', ',$brandname);
+					// 	$data['brand_group']=implode(', ',array_unique($brandgroup));
 
 					$list[]=$data;
 				}
@@ -1421,13 +1425,12 @@ class RequestController extends \yii\rest\Controller
 				$model->buyer_id = $data['buyer_id'];	
 				$model->is_brand_consent = $data['sel_reduction'];
 				
-				if(isset($_FILES['qua_exam_file']['name']))
-				{
-					
-				$tmp_name = $_FILES["qua_exam_file"]["tmp_name"];
-	   			$name = $_FILES["qua_exam_file"]["name"];
-				$model->tc_brand_consent_file=Yii::$app->globalfuns->postFiles($name,$tmp_name,$target_dir);	
-				}
+				// if(isset($_FILES['qua_exam_file']['name']))
+				// {		
+				// $tmp_name = $_FILES["qua_exam_file"]["tmp_name"];
+	   			// $name = $_FILES["qua_exam_file"]["name"];
+				// $model->tc_brand_consent_file=Yii::$app->globalfuns->postFiles($name,$tmp_name,$target_dir);	
+				// }
 				//$model->consignee_id = $data['consignee_id'];
 				$model->standard_id = $data['standard_id'];	
 				//$model->purchase_order_number = $data['purchase_order_number'];	
@@ -1638,28 +1641,31 @@ class RequestController extends \yii\rest\Controller
 	public function tcConsent($data,$id)
 	{
 		$re_status=false;
-		$tcbrnmod = TcRequestBrandConsent::find()->where(['app_id'=>$data['app_id'],'unit_id'=>$data['unit_id'],'tc_request_id'=>$id])->all();
-		if(count($tcbrnmod)>0){
+		$tcbrnmod = TcRequestBrandConsent::find()->where(['app_id'=>$data['app_id'],'unit_id'=>$data['unit_id'],'tc_request_id'=>$id])->one();
+		if($tcbrnmod!=='' && $tcbrnmod!==null){
+			$tcbrnmod->brand_id=$data['brand_id'];
+			$tcbrnmod->authorized_person_name=$data['authorized_name'];
+			$tcbrnmod->brand_consent_date=$data['brand_consent_date']?date('Y-m-d',strtotime($data['brand_consent_date'])):'';
+		
+			if($tcbrnmod->save()){
+				$re_status=true;
+			}
+		}else{
 			
-			TcRequestBrandConsent::deleteAll(['app_id'=>$data['app_id'],'unit_id'=>$data['unit_id'],'tc_request_id'=>$id]);
-		} 
-		$brandIds = array();
-		if(is_array($data['brand_id'])){
-			$brandIds = $data['brand_id'];
-			foreach($brandIds as $bid){
-				$tcmodel = new TcRequestBrandConsent();
-				$tcmodel->app_id = $data['app_id'];
-				$tcmodel->unit_id = $data['unit_id'];
-				$tcmodel->tc_request_id = $id;
-				$tcmodel->brand_id = $bid;
-
-				if($tcmodel->validate() && $tcmodel->save()){
-					$re_status=true;
-				}
+			$tcbrnmodel = new TcRequestBrandConsent(); 
+			$tcbrnmodel->app_id=$data['app_id'];
+			$tcbrnmodel->unit_id=$data['unit_id'];
+			$tcbrnmodel->tc_request_id=$id;
+			$tcbrnmodel->brand_id=$data['brand_id'];
+			$tcbrnmodel->authorized_person_name=$data['authorized_name'];
+			$tcbrnmodel->brand_consent_date=$data['brand_consent_date']?date('Y-m-d',strtotime($data['brand_consent_date'])):'';
+			
+			if($tcbrnmodel->validate() && $tcbrnmodel->save()){
+				
+				$re_status=true;
 			}
 		}
-		
-		
+	
 		return $re_status;
 	}
 	public function actionAddDeclaration()
@@ -1772,13 +1778,16 @@ class RequestController extends \yii\rest\Controller
 			$data["tc_number_cds"]=$model->tc_number_cds;
 			$data['tc_number']=$model->arrEnumStatus['approved']==$model->status?$model->tc_number:'TEMP'.$model->tc_number;
 			
-			$brandIds =[];
-			if(count($model->tcbrandconsent)>0){
-				foreach($model->tcbrandconsent as $cons){
-					$brandIds[]=$cons->brand_id;
-				}
-			}
-			$data['brand_id']=$brandIds;
+			// $brandIds =[];
+			// if(count($model->tcbrandconsent)>0){
+			// 	foreach($model->tcbrandconsent as $cons){
+			// 		$brandIds[]=$cons->brand_id;
+			// 	}
+			// }
+
+			$data['brand_id']=$model->tcbrandconsent->brand_id;
+			$data['authorized_name']=$model->tcbrandconsent->authorized_person_name;
+			$data['brand_consent_date']=$model->tcbrandconsent->brand_consent_date;
 
 			$applicationCompanyName='';
 			$applicationCompanyAddress='';

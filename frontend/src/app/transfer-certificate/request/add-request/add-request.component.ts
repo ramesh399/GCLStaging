@@ -162,6 +162,8 @@ export class AddRequestComponent implements OnInit {
       sel_reduction:['',[Validators.required]],
       brand_id : ['',[Validators.required]],
       qualification_exam:[''],
+      authorized_name:['',[Validators.required]],
+      brand_consent_date:['',[Validators.required, this.errorSummary.noWhitespaceValidator,Validators.maxLength(255)]]
         });
 	
     this.productForm = this.fb.group({
@@ -394,7 +396,18 @@ export class AddRequestComponent implements OnInit {
       this.onunitchange(result.requestdata.unit_id);
       this.loadAddress(result.requestdata.buyer_id,'buyer');
   		this.form.patchValue(result.requestdata);
-      this.qua_exam_file = result.requestdata.qua_exam_file;
+        this.form.patchValue({
+          brand_consent_date:result.requestdata.brand_consent_date?this.errorSummary.editDateFormat(result.requestdata.brand_consent_date):''
+        });
+        if(result.requestdata.sel_reduction==2){   
+          this.form.patchValue({
+          brand_id:'',
+          authorized_name:'',
+          brand_consent_date:''
+        });
+      }
+      
+      // this.qua_exam_file = result.requestdata.qua_exam_file;
   		this.getBuyerData();
 		this.requestStatus=true;
 		
@@ -916,6 +929,11 @@ export class AddRequestComponent implements OnInit {
 
       this.brandService.getBrand({ id: value, type: 'consent' }).subscribe(res => {
         this.brandlist = res.data;
+        if(this.brandlist.length==0){
+          this.brandService.getData().subscribe(res=>{
+            this.brandlist=res.data;
+          })
+        }
       });
     }
   }
@@ -1049,21 +1067,26 @@ export class AddRequestComponent implements OnInit {
   let udpname = this.form.get('usda_nop_compliant').value;
   let sel_brand = this.form.get('sel_reduction').value;
   let brandid = this.form.get('brand_id').value;
+  let auth_person_name = this.form.get('authorized_name').value;
+  let brand_consent_date = this.form.get('brand_consent_date').value?this.errorSummary.displayDateFormat(this.form.get('brand_consent_date').value):'';
 
   if(companyname=='' || unitname =='' || standardname=='' || buyername=='' || udpname==''|| (sel_brand==1 && brandid=='')){
     formerror=true;
   }
 
     
-  if(this.qua_exam_file=='' && this.form.value.sel_reduction==1){
-    this.qua_examfileErrors = 'Please upload brand file';
-    formerror=true;
+  if(this.form.value.sel_reduction==1){
+    
+    if(auth_person_name=='' || brand_consent_date==''){
+      formerror=true;
+    }
   }
     if (formerror==false && validationStatus) {
       
       this.loading.button = true;
-      
-      this.formData.append('formvalues',JSON.stringify(this.form.value));
+      let formvalue = this.form.value;
+      formvalue.brand_consent_date=brand_consent_date;
+      this.formData.append('formvalues',JSON.stringify(formvalue));
       //this.form.value
       this.requestservice.addData(this.formData)
       .pipe(
@@ -1086,7 +1109,8 @@ export class AddRequestComponent implements OnInit {
 					this.buttonDisable = false;	
 					this.loading.button = false;
 					this.tc_request_view=true;
-					this.tc_request_edit=false;					
+					this.tc_request_edit=false;		
+          this.formData = new FormData();			
 					//this.router.navigateByUrl('/transaction-certificate/request/list');
 				}, this.errorSummary.redirectTime);
 			}

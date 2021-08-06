@@ -77,5 +77,7 @@
     brandids?:any;
     created_by?:any;
     audit_type_label?:any;
+    consultant_name?:any;
+    consultancy_company?:any; 
 
 }

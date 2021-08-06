@@ -268,9 +268,47 @@
 										</div>
 									</div>
 								</div>
+
 								
                         </div>
-						
+							<div class="cs-pgm bg-white" *ngIf="app_type!='edit'">
+
+							<h3>Do you engage any consultants for the below applied standards?<span class="text-danger">*</span><a href="javascript:void(0);" (click)="openguidance(showguidance,'consultants')"  ><i class="fa fa-info-circle" aria-hidden="true" style="margin-left: 5px;"></i></a></h3>
+
+							<div *ngIf="app_type!='edit'">
+                                <span class="name-pad" style="padding-top:15px;">
+                                    <input type="radio" id="conyes" [checked]="f.sel_cons_ch.value=='1'?true:false" formControlName="sel_cons_ch" value="1" >&nbsp; <label for="yes1">Yes</label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" id="conno" [checked]="f.sel_cons_ch.value=='2'?true:false" formControlName="sel_cons_ch" value="2">&nbsp;<label for="no2"> No</label>
+                                </span>
+                            </div> 
+
+							<div class="cs-pgm-blue top" *ngIf="f.sel_cons_ch.value==1 && app_type!='edit'">
+								<div class="col-12 pad-left pad-right">
+								<div class="form-group row">
+								<div class="col-4">
+								<label>Consultant Name <span class="text-danger">*</span></label>
+								<input type="text" formControlName="consultant_name" [class.is-invalid]="f.consultant_name.invalid && f.consultant_name.touched " class="form-control"  placeholder="Consultant Name" >
+								<div *ngIf="f.consultant_name.errors" class="invalid-feedback">
+								<div *ngIf="f.consultant_name.errors.required" >Consultant Name is required</div>
+								<div *ngIf="f.consultant_name.errors.maxlength">Consultant Name cannot exceed 255 characters</div>
+								<div *ngIf="f.consultant_name.errors.pattern || f.consultant_name.hasError('whitespace')">Invalid Consultant Name</div>
+								</div>
+								</div>
+								<div class="col-4">
+								<label>Consultancy Company <span class="text-danger">*</span></label>
+								 <input type="text" formControlName="consultant_company" [class.is-invalid]="f.consultant_company.invalid && f.consultant_company.touched " class="form-control" placeholder="Consultant Company" >
+								<div *ngIf="f.consultant_company.errors" class="invalid-feedback">
+								<div *ngIf="f.consultant_company.errors.required" >Consultant Company is required</div>
+								<div *ngIf="f.consultant_company.errors.maxlength">Consultant Company cannot exceed 255 characters</div>
+								<div *ngIf="f.consultant_company.errors.pattern || f.consultant_company.hasError('whitespace')">Invalid Consultant Company</div>
+								</div>
+								</div>
+								</div>
+								</div>
+							</div>
+
+						</div>
                         <div class="cs-pgm bg-white">
 							<h3>For which program(s) would you like to have your company certified? <span class="text-danger">*</span><a href="javascript:void(0);" (click)="openguidance(showguidance,'standards')"  ><i class="fa fa-info-circle" aria-hidden="true" style="margin-left: 5px;"></i></a></h3>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-3 ch-bx">

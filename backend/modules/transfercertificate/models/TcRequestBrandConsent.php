@@ -1,7 +1,7 @@
 <?php
 
 namespace app\modules\transfercertificate\models;
-
+use app\modules\master\models\Brand;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -38,4 +38,9 @@ class TcRequestBrandConsent extends \yii\db\ActiveRecord
             
         ];
     }	
+
+    public function getbrand()
+    {
+        return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+    }
 }

@@ -1023,7 +1023,7 @@ class Certificate extends \yii\db\ActiveRecord
 						</tr>
 						<tr>
 							<td style="text-align:left;font-size:14px;padding-top:10px;width:90%;" valign="middle" class="reportDetailLayoutInner">
-								Accredited/Licensed by: International Organic Accreditation Services (IOAS), Contract No: 125
+								Accredited/Licensed by: IOAS Inc, Contract No: 125
 								<br><br>
 								This electronically issued document is the valid original version
 							</td>

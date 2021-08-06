@@ -79,7 +79,7 @@ class GenerateOfferController extends \yii\rest\Controller
 
 	public $downloadOfferfiles=['risk_assessment' => 'risk_assessment.xlsx'
 								, 'reconciliation_report'=>'reconciliation_report.xlsx'
-								,'content_claim_standard'=>'content_claim_standard.xlsx'
+								,'content_claim_standard'=>'content_claim_standard.docx'
 								,'chemical_declaration'=>'chemical_declaration.xlsx'
 								,'social_declaration'=>'social_declaration.xlsx'
 								,'environmental_declaration'=>'environmental_declaration.xlsx'

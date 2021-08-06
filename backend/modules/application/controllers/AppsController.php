@@ -689,6 +689,10 @@ class AppsController extends \yii\rest\Controller
 			$model->created_by=$userData['userid'];
 
 			$model->is_brand = $data['sel_brand_ch'];
+			// To Add Consultancy In Application Form
+			$model->is_consultant = isset($data['sel_cons_ch'])?$data['sel_cons_ch']:'';
+            $model->consultant_name = isset($data['consultant_name'])?$data['consultant_name']:'';
+            $model->consultancy_company = isset($data['consultant_company'])?$data['consultant_company']:'';
 			
 			
             if($model->validate() && $model->save())
@@ -2648,6 +2652,10 @@ class AppsController extends \yii\rest\Controller
 				
 				$resultarr["id"]=$model->id;
 				$resultarr["code"]=$model->code;
+
+				$resultarr['is_consultant']= $model->is_consultant;
+				$resultarr['consultant_name']= $model->consultant_name;
+				$resultarr['consultancy_company']=$model->consultancy_company;
 				
 				$resultarr['sel_brand_ch']= $model->is_brand;
 				$resultarr['brand_file']=$model->brand_file;

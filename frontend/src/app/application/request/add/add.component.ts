@@ -627,6 +627,11 @@ export class AddComponent implements OnInit {
 			salutation:res.salutation,
       sel_brand_ch:(res.sel_brand_ch)?res.sel_brand_ch:"2",
       sel_brand : (res.sel_brand)?res.sel_brand:'',
+      sel_cons_ch:(res.sel_cons_ch)?res.sel_cons_ch:"2",
+      sel_cons : (res.sel_cons)?res.sel_cons:'',
+      consultant_name : res.consultant_name,
+      consultant_company : res.consultant_company,
+
 			title:res.title,
 			first_name:res.first_name,
 			last_name:res.last_name,
@@ -742,7 +747,9 @@ export class AddComponent implements OnInit {
       sel_reduction:['',[Validators.required]],
       sel_brand_ch:['',[Validators.required]],
       
-
+      sel_cons_ch:['',[Validators.required]],
+      consultant_name:[''],
+      consultant_company:[''],
 
       sel_process:['',[Validators.required]],
       sel_brand : ['',[Validators.required]],
@@ -787,7 +794,22 @@ export class AddComponent implements OnInit {
   */
     //product:['',[Validators.required]],
 	  //wastage:['',[Validators.required]],
-    
+
+    this.enquiryForm.get('sel_cons_ch').valueChanges.subscribe(val => {
+      //console.log('val',val);
+      const consultant_name = this.enquiryForm.get('consultant_name');
+      const consultant_company = this.enquiryForm.get('consultant_company');
+      if (val === "1") {
+        consultant_name.setValidators(Validators.required);
+        consultant_company.setValidators(Validators.required);
+        this.enquiryForm.updateValueAndValidity();
+      }else if (val === "2") {
+        consultant_name.clearValidators();
+        consultant_company.clearValidators();
+        this.enquiryForm.updateValueAndValidity();
+      }
+     
+    });
   }
   editDeclaration(index:number){}
   downloadUserFile(filename,filetype){}
@@ -829,11 +851,13 @@ export class AddComponent implements OnInit {
               state_id:res.company_state_id,
               country_id:res.company_country_id,
               sel_brand_ch:"2",
-              
+              sel_cons_ch:"2",
               first_name:res.first_name,
               last_name:res.last_name,
               company_telephone:res.telephone,
               company_email:res.email,
+              consultant_name:res.consultant_name,
+              consultant_company:res.consultant_company,
               
               
               

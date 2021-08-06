@@ -1515,7 +1515,7 @@ class GenerateCertificateController extends \yii\rest\Controller
 					
 			
 					$getCertifiedDateModel = Certificate::find()->where(['parent_app_id' => $model->parent_app_id,'standard_id'=>$model->standard_id,'certificate_status'=>0,'status'=>array($certificatemodel->arrEnumStatus['certificate_generated'],$certificatemodel->arrEnumStatus['extension'])])->orderBy(['id' => SORT_DESC])->one();
-					if($getCertifiedDateModel !== null && $audit_type!=$applicationmodel->arrEnumAuditType['renewal'])
+					if($getCertifiedDateModel !== null)
 					{
 						$certificate_generate_date = date("Y-m-d",time());
 						$certificate_generate_date = date('Y-m-d',strtotime($certificate_generate_date));						

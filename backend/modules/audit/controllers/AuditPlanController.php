@@ -432,7 +432,8 @@ class AuditPlanController extends \yii\rest\Controller
 				$unit_lead_auditor=$value['unit_lead_auditor'];
 				$technical_expert=$value['technical_expert'];
 				$translator=$value['translator'];
-				$observer=isset($value['observer'])?$value['observer']:'';					
+				$observer=isset($value['observer'])?$value['observer']:'';		
+				$trainee_auditor=isset($value['trainee_auditor'])?$value['trainee_auditor']:'';			
 				$appunits = ApplicationUnit::find()->where(['id'=>$unit_id])->one();
 
 				if(1)
@@ -593,6 +594,7 @@ class AuditPlanController extends \yii\rest\Controller
 									$AuditPlanUnitHistoryModel->technical_expert=$auditPlanUnit->technical_expert;
 									$AuditPlanUnitHistoryModel->translator=$auditPlanUnit->translator;
 									$AuditPlanUnitHistoryModel->observer=$auditPlanUnit->observer;
+									$AuditPlanUnitHistoryModel->trainee_auditor=$auditPlanUnit->trainee_auditor;
 									$AuditPlanUnitHistoryModel->quotation_manday=$auditPlanUnit->quotation_manday;						
 									$AuditPlanUnitHistoryModel->actual_manday=$auditPlanUnit->actual_manday;
 									$AuditPlanUnitHistoryModel->status=$auditPlanUnit->status;
@@ -1016,6 +1018,7 @@ class AuditPlanController extends \yii\rest\Controller
 						$auditunitmodel->technical_expert=$value['technical_expert'];
 						$auditunitmodel->translator=$value['translator'];
 						$auditunitmodel->observer=isset($value['observer'])?$value['observer']:'';
+						$auditunitmodel->trainee_auditor=isset($value['trainee_auditor'])?$value['trainee_auditor']:'';
 						$auditunitmodel->quotation_manday=$value['quotation_manday'];
 						$total_quotation_manday+=$value['quotation_manday'];
 						$auditunitmodel->actual_manday=$value['actual_manday'];
@@ -1243,7 +1246,8 @@ class AuditPlanController extends \yii\rest\Controller
 				$unit_lead_auditor=$value['unit_lead_auditor'];
 				$technical_expert=$value['technical_expert'];
 				$translator=$value['translator'];
-				$observer=isset($value['observer'])?$value['observer']:'';		
+				$observer=isset($value['observer'])?$value['observer']:'';	
+				$trainee_auditor=isset($value['trainee_auditor'])?$value['trainee_auditor']:'';	
 				$appunits = ApplicationUnit::find()->where(['id'=>$unit_id])->one();
 
 				if(1)
@@ -1401,6 +1405,7 @@ class AuditPlanController extends \yii\rest\Controller
 							$auditunitmodel->technical_expert=$value['technical_expert'];
 							$auditunitmodel->translator=$value['translator'];
 							$auditunitmodel->observer=isset($value['observer'])?$value['observer']:'';
+							$auditunitmodel->trainee_auditor=isset($value['trainee_auditor'])?$value['trainee_auditor']:'';
 							$auditunitmodel->quotation_manday=$value['quotation_manday'];
 							$auditunitmodel->actual_manday=$value['actual_manday'];
 							if($auditunitmodel->validate() && $auditunitmodel->save())
@@ -1897,6 +1902,7 @@ class AuditPlanController extends \yii\rest\Controller
 							$unitsarr['technical_expert_id']=$unit->technical_expert;
 							$unitsarr['translator_id']=$unit->translator;
 							$unitsarr['observer']=($unit->observer!='' ? $unit->observer : 'NA');
+							$unitsarr['trainee_auditor']=($unit->trainee_auditor!=''?$unit->trainee_auditor:'NA');
 							$unitsarr['technical_expert']=($unit->unittechnicalexpert)?$unit->unittechnicalexpert->first_name." ".$unit->unittechnicalexpert->last_name:'';
 							$unitsarr['translator']=($unit->unittranslator)?$unit->unittranslator->first_name." ".$unit->unittranslator->last_name:'';
 
@@ -1932,6 +1938,7 @@ class AuditPlanController extends \yii\rest\Controller
 								$unitsarr['followup_technical_expert']=($unit->followupunittechnicalexpert)?$unit->followupunittechnicalexpert->first_name." ".$unit->followupunittechnicalexpert->last_name:'';
 								$unitsarr['followup_translator']=($unit->followupunittranslator)?$unit->followupunittranslator->first_name." ".$unit->followupunittranslator->last_name:'';
 								$unitsarr['followup_observer']=($unit->followup_observer!='' ? $unit->followup_observer : 'NA');
+								$unitsarr['followup_trainee_auditor']=($unit->followup_trainee_auditor!=''?$unit->followup_trainee_auditor:'NA');
 								$unitsarr['followup_actual_manday']=$unit->followup_actual_manday;
 								$unitsarr['followup_unit_lead_auditor']=($unit->followupunitleadauditor)?$unit->followupunitleadauditor->first_name." ".$unit->followupunitleadauditor->last_name:'NA';
 								$unitsarr['followup_unit_lead_auditor_id']=$unit->followup_unit_lead_auditor;
@@ -2538,6 +2545,7 @@ class AuditPlanController extends \yii\rest\Controller
 								$unitsarr['technical_expert_id']=$unit->technical_expert;
 								$unitsarr['translator_id']=$unit->translator;
 								$unitsarr['observer']=$unit->observer;
+								$unitsarr['trainee_auditor']=$unit->trainee_auditor;
 								$unitsarr['technical_expert']=($unit->unittechnicalexpert)?$unit->unittechnicalexpert->first_name." ".$unit->unittechnicalexpert->last_name:'';
 								$unitsarr['translator']=($unit->unittranslator)?$unit->unittranslator->first_name." ".$unit->unittranslator->last_name:'';
 
@@ -2791,6 +2799,7 @@ class AuditPlanController extends \yii\rest\Controller
 								$unitsarr['technical_expert_id']=$unit->technical_expert;
 								$unitsarr['translator_id']=$unit->translator;
 								$unitsarr['observer']=$unit->observer;
+								$unitsarr['trainee_auditor']=$unit->trainee_auditor;
 								$unitsarr['technical_expert']=($unit->unittechnicalexpert)?$unit->unittechnicalexpert->first_name." ".$unit->unittechnicalexpert->last_name:'';
 								$unitsarr['translator']=($unit->unittranslator)?$unit->unittranslator->first_name." ".$unit->unittranslator->last_name:'';
 
@@ -3599,6 +3608,7 @@ class AuditPlanController extends \yii\rest\Controller
 							$unitsarr['technical_expert_id']=$unit->technical_expert;
 							$unitsarr['translator_id']=$unit->translator;
 							$unitsarr['observer']=($unit->observer!='' ? $unit->observer : 'NA');
+							$unitsarr['trainee_auditor']=($unit->trainee_auditor!=''?$unit->trainee_auditor:'NA');
 							$unitsarr['technical_expert']=($unit->unittechnicalexpert)?$unit->unittechnicalexpert->first_name." ".$unit->unittechnicalexpert->last_name:'';
 							$unitsarr['translator']=($unit->unittranslator)?$unit->unittranslator->first_name." ".$unit->unittranslator->last_name:'';
 
@@ -4300,8 +4310,10 @@ class AuditPlanController extends \yii\rest\Controller
 						$unitdata['technical_expert'] = $planunit->technical_expert;
 						$unitdata['translator'] = $planunit->translator;
 						$unitdata['observer'] = $planunit->observer;
+						$unitdata['trainee_auditor']=$planunit->trainee_auditor;
 						$unitdata['actual_manday'] = $planunit->actual_manday;
 						$unitdata['observer'] = $planunit->observer;
+						$unitdata['trainee_auditor']=$planunit->trainee_auditor;
 						$unitdates = [];
 						$unitauditors = [];
 						$unitdatesDB = [];

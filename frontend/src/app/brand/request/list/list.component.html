@@ -83,7 +83,7 @@
 				<th scope="col" sortable="city" (sort)="onSort($event)" >City</th>				
 				<th scope="col">Telephone</th>
 				-->
-				<th *ngIf="userType!=2 && !userdetails.rules.includes('brand_report')"scope="col" class="text-center" sortable="status" (sort)="onSort($event)" >Status</th>
+				<!-- <th *ngIf="userType!=2 && !userdetails.rules.includes('brand_report')"scope="col" class="text-center" sortable="status" (sort)="onSort($event)" >Status</th> -->
 				<!--<th scope="col" class="text-center" (sort)="onSort($event)" >Overall Status</th>-->
 				<th scope="col" class="text-center">Type</th>
 				<th width="10%" scope="col" >Created Date</th>
@@ -108,7 +108,7 @@
 				<td><ngb-highlight [result]="application.telephone" [term]="service.searchTerm"></ngb-highlight></td>
 				-->
 				
-				<td *ngIf="userType!=2 && !userdetails.rules.includes('brand_report')" class="text-center"><b><span [style.color]="application.status_label_color"><ngb-highlight [result]="application.brand_status" [term]="service.searchTerm"></ngb-highlight></span></b></td>
+				<!-- <td *ngIf="userType!=2 && !userdetails.rules.includes('brand_report')" class="text-center"><b><span [style.color]="application.status_label_color"><ngb-highlight [result]="application.brand_status" [term]="service.searchTerm"></ngb-highlight></span></b></td> -->
 				<!--<td class="text-center"><ngb-highlight [result]="application.overall_status" [term]="service.searchTerm"></ngb-highlight></td>-->
 				<td class="text-center"><ngb-highlight [result]="application.audit_type_label" [term]="service.searchTerm"></ngb-highlight></td>
 				<td><ngb-highlight [result]="application.created_at" [term]="service.searchTerm"></ngb-highlight></td>
